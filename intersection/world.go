@@ -59,9 +59,9 @@ func (w *World) Intersect(r ray.Ray) Intersections {
 
 func (w *World) ShadeHit(comps PreparedComps) color.Color {
 	result := color.New(0, 0, 0)
-	shadowed := w.IsShadowed(comps.OverPoint)
 
 	for _, light := range w.Lights {
+		shadowed := w.IsShadowed(comps.OverPoint, light)
 		result = result.Add(comps.Object.Material.Lighting(
 			light,
 			comps.OverPoint,
@@ -85,8 +85,8 @@ func (w *World) ColorAt(r ray.Ray) color.Color {
 	return w.ShadeHit(comps)
 }
 
-func (w *World) IsShadowed(point tuple.Tuple) bool {
-	v := w.Lights[0].Position.Sub(point) // TODO all lights?
+func (w *World) IsShadowed(point tuple.Tuple, l light.PointLight) bool {
+	v := l.Position.Sub(point)
 	distance := v.Magnitude()
 	direction := v.Normalize()
 

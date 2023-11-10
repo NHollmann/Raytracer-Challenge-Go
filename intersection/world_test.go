@@ -180,7 +180,7 @@ func TestShadowCollinear(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	p := tuple.Point(0, 10, 0)
 
-	if w.IsShadowed(p) {
+	if w.IsShadowed(p, w.Lights[0]) {
 		t.Errorf("wrong shadow result")
 	}
 }
@@ -189,7 +189,7 @@ func TestShadowBetween(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	p := tuple.Point(10, -10, 10)
 
-	if !w.IsShadowed(p) {
+	if !w.IsShadowed(p, w.Lights[0]) {
 		t.Errorf("wrong shadow result")
 	}
 }
@@ -198,7 +198,7 @@ func TestShadowBehindLight(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	p := tuple.Point(-20, 20, -20)
 
-	if w.IsShadowed(p) {
+	if w.IsShadowed(p, w.Lights[0]) {
 		t.Errorf("wrong shadow result")
 	}
 }
@@ -207,7 +207,7 @@ func TestShadowBehindObject(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	p := tuple.Point(-2, 2, -2)
 
-	if w.IsShadowed(p) {
+	if w.IsShadowed(p, w.Lights[0]) {
 		t.Errorf("wrong shadow result")
 	}
 }
