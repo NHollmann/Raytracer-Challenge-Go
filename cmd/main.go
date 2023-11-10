@@ -1,0 +1,89 @@
+package main
+
+import (
+	"fmt"
+	"math"
+	"time"
+
+	"nicolashollmann.de/raytracer-challange/camera"
+	"nicolashollmann.de/raytracer-challange/color"
+	"nicolashollmann.de/raytracer-challange/intersection"
+	"nicolashollmann.de/raytracer-challange/light"
+	"nicolashollmann.de/raytracer-challange/matrix"
+	"nicolashollmann.de/raytracer-challange/tuple"
+)
+
+func main() {
+	fmt.Println("Raytracer")
+	fmt.Println("=========")
+	fmt.Println("Begin rendering...")
+
+	startTime := time.Now()
+	renderImage()
+	duration := time.Since(startTime)
+
+	fmt.Println("Done!")
+	fmt.Printf("Rendering took %s\n", duration)
+}
+
+func renderImage() {
+	world := intersection.NewWorld()
+
+	floor := intersection.NewSphere()
+	floor.Transform = matrix.Scaling(10, 0.01, 10)
+	floor.Material.Color = color.New(1, 0.9, 0.9)
+	floor.Material.Specular = 0
+	world.AddObject(floor)
+
+	leftWall := intersection.NewSphere()
+	leftWall.Transform = matrix.
+		Translation(0, 0, 5).
+		Mul(matrix.RotationY(-math.Pi / 4.0)).
+		Mul(matrix.RotationX(math.Pi / 2.0)).
+		Mul(matrix.Scaling(10, 0.01, 10))
+	leftWall.Material = floor.Material
+	world.AddObject(leftWall)
+
+	rightWall := intersection.NewSphere()
+	rightWall.Transform = matrix.
+		Translation(0, 0, 5).
+		Mul(matrix.RotationY(math.Pi / 4.0)).
+		Mul(matrix.RotationX(math.Pi / 2.0)).
+		Mul(matrix.Scaling(10, 0.01, 10))
+	rightWall.Material = floor.Material
+	world.AddObject(rightWall)
+
+	middle := intersection.NewSphere()
+	middle.Transform = matrix.Translation(-0.5, 1, 0.5)
+	middle.Material.Color = color.New(0.1, 1, 0.5)
+	middle.Material.Diffuse = 0.7
+	middle.Material.Specular = 0.3
+	world.AddObject(middle)
+
+	right := intersection.NewSphere()
+	right.Transform = matrix.Translation(1.5, 0.5, -0.5).Mul(matrix.Scaling(0.5, 0.5, 0.5))
+	right.Material.Color = color.New(0.5, 1, 0.1)
+	right.Material.Diffuse = 0.7
+	right.Material.Specular = 0.3
+	world.AddObject(right)
+
+	left := intersection.NewSphere()
+	left.Transform = matrix.Translation(-1.5, 0.33, -0.75).Mul(matrix.Scaling(0.33, 0.33, 0.33))
+	left.Material.Color = color.New(1, 0.8, 0.1)
+	left.Material.Diffuse = 0.7
+	left.Material.Specular = 0.3
+	world.AddObject(left)
+
+	lightSource := light.NewPoint(tuple.Point(-10, 10, -10), color.New(1, 1, 1))
+	world.AddLight(lightSource)
+
+	cam := camera.New(400, 200, math.Pi/3.0)
+	cam.Transform = matrix.ViewTransform(
+		tuple.Point(0, 1.5, -5),
+		tuple.Point(0, 1, 0),
+		tuple.Vector(0, 1, 0),
+	)
+
+	renderCanvas := cam.Render(world)
+	renderCanvas.SavePpmToFile("rendering.ppm")
+}
