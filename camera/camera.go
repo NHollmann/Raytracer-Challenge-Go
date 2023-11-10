@@ -3,11 +3,11 @@ package camera
 import (
 	"math"
 
-	"nicolashollmann.de/raytracer-challange/canvas"
-	"nicolashollmann.de/raytracer-challange/intersection"
-	"nicolashollmann.de/raytracer-challange/matrix"
-	"nicolashollmann.de/raytracer-challange/ray"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/canvas"
+	"github.com/NHollmann/Raytracer-Challenge-Go/intersection"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type Camera struct {

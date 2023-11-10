@@ -3,7 +3,7 @@ package tuple
 import (
 	"math"
 
-	"nicolashollmann.de/raytracer-challange/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 )
 
 type Tuple [4]float64

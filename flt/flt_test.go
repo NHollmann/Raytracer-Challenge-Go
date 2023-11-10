@@ -3,7 +3,7 @@ package flt_test
 import (
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 )
 
 func TestEqual(t *testing.T) {

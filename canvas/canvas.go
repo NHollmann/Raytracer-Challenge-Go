@@ -1,6 +1,6 @@
 package canvas
 
-import "nicolashollmann.de/raytracer-challange/color"
+import "github.com/NHollmann/Raytracer-Challenge-Go/color"
 
 type Canvas struct {
 	width  uint32

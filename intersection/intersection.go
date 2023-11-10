@@ -3,9 +3,9 @@ package intersection
 import (
 	"sort"
 
-	"nicolashollmann.de/raytracer-challange/flt"
-	"nicolashollmann.de/raytracer-challange/ray"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type Intersection struct {

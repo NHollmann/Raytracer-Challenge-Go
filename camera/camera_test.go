@@ -4,12 +4,12 @@ import (
 	"math"
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/camera"
-	"nicolashollmann.de/raytracer-challange/color"
-	"nicolashollmann.de/raytracer-challange/flt"
-	"nicolashollmann.de/raytracer-challange/intersection"
-	"nicolashollmann.de/raytracer-challange/matrix"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/camera"
+	"github.com/NHollmann/Raytracer-Challenge-Go/color"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/intersection"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 func TestCameraConstructor(t *testing.T) {

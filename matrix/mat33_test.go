@@ -3,8 +3,8 @@ package matrix_test
 import (
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/flt"
-	"nicolashollmann.de/raytracer-challange/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 )
 
 func TestMat33Index(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/matrix"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 func TestTranslation(t *testing.T) {

@@ -3,9 +3,9 @@ package matrix_test
 import (
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/flt"
-	"nicolashollmann.de/raytracer-challange/matrix"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 func TestMat44Index(t *testing.T) {

@@ -3,7 +3,7 @@ package matrix
 import (
 	"fmt"
 
-	"nicolashollmann.de/raytracer-challange/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 )
 
 type Mat33 [9]float64

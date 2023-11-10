@@ -4,12 +4,12 @@ import (
 	"math"
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/flt"
-	"nicolashollmann.de/raytracer-challange/intersection"
-	"nicolashollmann.de/raytracer-challange/material"
-	"nicolashollmann.de/raytracer-challange/matrix"
-	"nicolashollmann.de/raytracer-challange/ray"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/intersection"
+	"github.com/NHollmann/Raytracer-Challenge-Go/material"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 func TestSphereDefaultTransform(t *testing.T) {

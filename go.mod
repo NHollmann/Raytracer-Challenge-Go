@@ -1,3 +1,3 @@
-module nicolashollmann.de/raytracer-challange
+module github.com/NHollmann/Raytracer-Challenge-Go
 
 go 1.19

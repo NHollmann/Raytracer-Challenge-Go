@@ -1,11 +1,11 @@
 package intersection
 
 import (
-	"nicolashollmann.de/raytracer-challange/color"
-	"nicolashollmann.de/raytracer-challange/light"
-	"nicolashollmann.de/raytracer-challange/matrix"
-	"nicolashollmann.de/raytracer-challange/ray"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/color"
+	"github.com/NHollmann/Raytracer-Challenge-Go/light"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type World struct {

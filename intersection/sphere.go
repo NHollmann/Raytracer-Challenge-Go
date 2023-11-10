@@ -3,10 +3,10 @@ package intersection
 import (
 	"math"
 
-	"nicolashollmann.de/raytracer-challange/material"
-	"nicolashollmann.de/raytracer-challange/matrix"
-	"nicolashollmann.de/raytracer-challange/ray"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/material"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type Sphere struct {

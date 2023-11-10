@@ -3,9 +3,9 @@ package light_test
 import (
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/color"
-	"nicolashollmann.de/raytracer-challange/light"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/color"
+	"github.com/NHollmann/Raytracer-Challenge-Go/light"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 func TestPointLightConstructor(t *testing.T) {

@@ -3,8 +3,8 @@ package color_test
 import (
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/color"
-	"nicolashollmann.de/raytracer-challange/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/color"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 )
 
 func TestColorConstructor(t *testing.T) {

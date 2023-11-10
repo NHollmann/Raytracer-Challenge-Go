@@ -3,8 +3,8 @@ package matrix
 import (
 	"fmt"
 
-	"nicolashollmann.de/raytracer-challange/flt"
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type Mat44 [16]float64

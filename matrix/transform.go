@@ -3,7 +3,7 @@ package matrix
 import (
 	"math"
 
-	"nicolashollmann.de/raytracer-challange/tuple"
+	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 func Translation(x, y, z float64) Mat44 {

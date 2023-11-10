@@ -1,6 +1,6 @@
 package color
 
-import "nicolashollmann.de/raytracer-challange/flt"
+import "github.com/NHollmann/Raytracer-Challenge-Go/flt"
 
 type Color [3]float64
 

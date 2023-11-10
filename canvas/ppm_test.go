@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"nicolashollmann.de/raytracer-challange/canvas"
-	"nicolashollmann.de/raytracer-challange/color"
+	"github.com/NHollmann/Raytracer-Challenge-Go/canvas"
+	"github.com/NHollmann/Raytracer-Challenge-Go/color"
 )
 
 func TestCanvasSavePpm(t *testing.T) {
