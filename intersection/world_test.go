@@ -117,7 +117,7 @@ func TestWorldShade(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := w.Objects[0]
-	i := intersection.NewIntersection(4, &shape)
+	i := intersection.NewIntersection(4, shape)
 	comps := i.PrepareComputations(r)
 
 	c := w.ShadeHit(comps)
@@ -131,7 +131,7 @@ func TestWorldShadeInside(t *testing.T) {
 	w.Lights[0] = light.NewPoint(tuple.Point(0, 0.25, 0), color.New(1, 1, 1))
 	r := ray.New(tuple.Point(0, 0, 0), tuple.Vector(0, 0, 1))
 	shape := w.Objects[1]
-	i := intersection.NewIntersection(0.5, &shape)
+	i := intersection.NewIntersection(0.5, shape)
 	comps := i.PrepareComputations(r)
 
 	c := w.ShadeHit(comps)
@@ -224,7 +224,7 @@ func TestShadeHitShadow(t *testing.T) {
 	w.AddObject(s2)
 
 	r := ray.New(tuple.Point(0, 0, 5), tuple.Vector(0, 0, 1))
-	i := intersection.NewIntersection(4, &s2)
+	i := intersection.NewIntersection(4, s2)
 
 	comps := i.PrepareComputations(r)
 	c := w.ShadeHit(comps)

@@ -9,13 +9,13 @@ import (
 )
 
 type World struct {
-	Objects []Sphere
+	Objects []*Sphere
 	Lights  []light.PointLight
 }
 
 func NewWorld() World {
 	return World{
-		Objects: []Sphere{},
+		Objects: []*Sphere{},
 		Lights:  []light.PointLight{},
 	}
 }
@@ -30,14 +30,14 @@ func NewDefaultWorld() World {
 	s2.Transform = matrix.Scaling(0.5, 0.5, 0.5)
 
 	return World{
-		Objects: []Sphere{s1, s2},
+		Objects: []*Sphere{s1, s2},
 		Lights: []light.PointLight{
 			light.NewPoint(tuple.Point(-10, 10, -10), color.New(1, 1, 1)),
 		},
 	}
 }
 
-func (w *World) AddObject(obj Sphere) {
+func (w *World) AddObject(obj *Sphere) {
 	w.Objects = append(w.Objects, obj)
 }
 
@@ -62,7 +62,7 @@ func (w *World) ShadeHit(comps PreparedComps) color.Color {
 
 	for _, light := range w.Lights {
 		shadowed := w.IsShadowed(comps.OverPoint, light)
-		result = result.Add(comps.Object.Material.Lighting(
+		result = result.Add(comps.Object.GetMaterial().Lighting(
 			light,
 			comps.OverPoint,
 			comps.EyeV,

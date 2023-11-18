@@ -10,14 +10,14 @@ import (
 
 type Intersection struct {
 	T      float64
-	Object *Sphere // TODO Allgemeines Objekt (interface)
+	Object Shape
 }
 
 type Intersections []Intersection
 
 type PreparedComps struct {
 	T         float64
-	Object    *Sphere // TODO Allgemeines Objekt (interface)
+	Object    Shape
 	Point     tuple.Tuple
 	OverPoint tuple.Tuple
 	EyeV      tuple.Tuple
@@ -25,7 +25,7 @@ type PreparedComps struct {
 	Inside    bool
 }
 
-func NewIntersection(T float64, Object *Sphere) Intersection {
+func NewIntersection(T float64, Object Shape) Intersection {
 	return Intersection{
 		T:      T,
 		Object: Object,

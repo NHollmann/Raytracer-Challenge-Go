@@ -12,20 +12,20 @@ import (
 
 func TestIntersectionConstructor(t *testing.T) {
 	s := intersection.NewSphere()
-	i := intersection.NewIntersection(3.5, &s)
+	i := intersection.NewIntersection(3.5, s)
 
 	if !flt.Equal(i.T, 3.5) {
 		t.Errorf("intersections doesn't have a t of 3.5")
 	}
-	if i.Object != &s {
+	if i.Object != s {
 		t.Errorf("intersections has the wrong object")
 	}
 }
 
 func TestHitPositive(t *testing.T) {
 	s := intersection.NewSphere()
-	i1 := intersection.NewIntersection(1.0, &s)
-	i2 := intersection.NewIntersection(2.0, &s)
+	i1 := intersection.NewIntersection(1.0, s)
+	i2 := intersection.NewIntersection(2.0, s)
 	xs := intersection.Intersections{i1, i2}
 
 	xs.Sort()
@@ -37,8 +37,8 @@ func TestHitPositive(t *testing.T) {
 
 func TestHitSomeNegative(t *testing.T) {
 	s := intersection.NewSphere()
-	i1 := intersection.NewIntersection(-1.0, &s)
-	i2 := intersection.NewIntersection(1.0, &s)
+	i1 := intersection.NewIntersection(-1.0, s)
+	i2 := intersection.NewIntersection(1.0, s)
 	xs := intersection.Intersections{i1, i2}
 
 	xs.Sort()
@@ -50,8 +50,8 @@ func TestHitSomeNegative(t *testing.T) {
 
 func TestHitAllNegative(t *testing.T) {
 	s := intersection.NewSphere()
-	i1 := intersection.NewIntersection(-2.0, &s)
-	i2 := intersection.NewIntersection(-1.0, &s)
+	i1 := intersection.NewIntersection(-2.0, s)
+	i2 := intersection.NewIntersection(-1.0, s)
 	xs := intersection.Intersections{i1, i2}
 
 	xs.Sort()
@@ -63,10 +63,10 @@ func TestHitAllNegative(t *testing.T) {
 
 func TestHitAlwaysLowest(t *testing.T) {
 	s := intersection.NewSphere()
-	i1 := intersection.NewIntersection(5.0, &s)
-	i2 := intersection.NewIntersection(7.0, &s)
-	i3 := intersection.NewIntersection(-3.0, &s)
-	i4 := intersection.NewIntersection(2.0, &s)
+	i1 := intersection.NewIntersection(5.0, s)
+	i2 := intersection.NewIntersection(7.0, s)
+	i3 := intersection.NewIntersection(-3.0, s)
+	i4 := intersection.NewIntersection(2.0, s)
 	xs := intersection.Intersections{i1, i2, i3, i4}
 
 	xs.Sort()
@@ -89,7 +89,7 @@ func TestHitEmpty(t *testing.T) {
 func TestPrecomputeIntersection(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := intersection.NewSphere()
-	i := intersection.NewIntersection(4, &shape)
+	i := intersection.NewIntersection(4, shape)
 
 	comps := i.PrepareComputations(r)
 	if !flt.Equal(comps.T, i.T) {
@@ -112,7 +112,7 @@ func TestPrecomputeIntersection(t *testing.T) {
 func TestPrecomputeIntersectionOutside(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := intersection.NewSphere()
-	i := intersection.NewIntersection(4, &shape)
+	i := intersection.NewIntersection(4, shape)
 
 	comps := i.PrepareComputations(r)
 	if comps.Inside {
@@ -123,7 +123,7 @@ func TestPrecomputeIntersectionOutside(t *testing.T) {
 func TestPrecomputeIntersectionInside(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, 0), tuple.Vector(0, 0, 1))
 	shape := intersection.NewSphere()
-	i := intersection.NewIntersection(1, &shape)
+	i := intersection.NewIntersection(1, shape)
 
 	comps := i.PrepareComputations(r)
 	if !flt.Equal(comps.T, i.T) {
@@ -150,7 +150,7 @@ func TestHitOffsetPoint(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := intersection.NewSphere()
 	shape.Transform = matrix.Translation(0, 0, 1)
-	i := intersection.NewIntersection(5, &shape)
+	i := intersection.NewIntersection(5, shape)
 	comps := i.PrepareComputations(r)
 	if comps.OverPoint.Z() >= flt.Epsilon/2.0 || comps.Point.Z() <= comps.OverPoint.Z() {
 		t.Errorf("over point wrong")

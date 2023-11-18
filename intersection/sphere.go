@@ -3,27 +3,24 @@ package intersection
 import (
 	"math"
 
-	"github.com/NHollmann/Raytracer-Challenge-Go/material"
-	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type Sphere struct {
-	Transform matrix.Mat44
-	Material  material.Material
+	*BaseShape
 }
 
-func NewSphere() Sphere {
-	return Sphere{
-		Transform: matrix.Identity44(),
-		Material:  material.New(),
+func NewSphere() *Sphere {
+	shape := NewShape()
+	sphere := &Sphere{
+		shape,
 	}
+	shape.Shape = sphere
+	return sphere
 }
 
-func (s *Sphere) Intersect(r ray.Ray) Intersections {
-	r = r.Transform(s.Transform.Inverse())
-
+func (s *Sphere) localIntersect(r ray.Ray) Intersections {
 	sphereToRay := r.Origin.Sub(tuple.Point(0, 0, 0))
 
 	a := r.Direction.Dot(r.Direction)
@@ -47,10 +44,6 @@ func (s *Sphere) Intersect(r ray.Ray) Intersections {
 	}
 }
 
-func (s *Sphere) NormalAt(p tuple.Tuple) tuple.Tuple {
-	objectPoint := s.Transform.Inverse().MulTuple(p)
-	objectNormal := objectPoint.Sub(tuple.Point(0, 0, 0))
-	worldNormal := s.Transform.Inverse().Transpose().MulTuple(objectNormal)
-	worldNormal[3] = 0
-	return worldNormal.Normalize()
+func (s *Sphere) localNormalAt(p tuple.Tuple) tuple.Tuple {
+	return p.Sub(tuple.Point(0, 0, 0))
 }

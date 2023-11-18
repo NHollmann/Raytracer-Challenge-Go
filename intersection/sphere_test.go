@@ -40,13 +40,13 @@ func TestSphereIntersection2Points(t *testing.T) {
 	if !flt.Equal(xs[0].T, 4.0) {
 		t.Errorf("first sphere intersection not at 4.0")
 	}
-	if xs[0].Object != &s {
+	if xs[0].Object != s {
 		t.Errorf("first sphere intersection has wrong object")
 	}
 	if !flt.Equal(xs[1].T, 6.0) {
 		t.Errorf("second sphere intersection not at 6.0")
 	}
-	if xs[1].Object != &s {
+	if xs[1].Object != s {
 		t.Errorf("second sphere intersection has wrong object")
 	}
 }
