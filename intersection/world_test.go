@@ -38,16 +38,16 @@ func TestDefaultWorldConstructor(t *testing.T) {
 	if !w.Lights[0].Position.Equal(tuple.Point(-10, 10, -10)) {
 		t.Errorf("wrong light position")
 	}
-	if !w.Objects[0].Material.Color.Equal(color.New(0.8, 1.0, 0.6)) {
+	if !w.Objects[0].GetMaterial().Color.Equal(color.New(0.8, 1.0, 0.6)) {
 		t.Errorf("object 0 wrong color")
 	}
-	if !flt.Equal(w.Objects[0].Material.Diffuse, 0.7) {
+	if !flt.Equal(w.Objects[0].GetMaterial().Diffuse, 0.7) {
 		t.Errorf("object 0 wrong diffuse")
 	}
-	if !flt.Equal(w.Objects[0].Material.Specular, 0.2) {
+	if !flt.Equal(w.Objects[0].GetMaterial().Specular, 0.2) {
 		t.Errorf("object 0 wrong specular")
 	}
-	if !w.Objects[1].Transform.Equal(matrix.Scaling(0.5, 0.5, 0.5)) {
+	if !w.Objects[1].GetTransform().Equal(matrix.Scaling(0.5, 0.5, 0.5)) {
 		t.Errorf("object 1 wrong transform")
 	}
 }
@@ -164,14 +164,14 @@ func TestWorldColorAtOutside(t *testing.T) {
 
 func TestWorldColorAtInside(t *testing.T) {
 	w := intersection.NewDefaultWorld()
-	w.Objects[0].Material.Ambient = 1
-	w.Objects[1].Material.Ambient = 1
+	w.Objects[0].GetMaterial().Ambient = 1
+	w.Objects[1].GetMaterial().Ambient = 1
 	inner := w.Objects[1]
 	r := ray.New(tuple.Point(0, 0, 0.75), tuple.Vector(0, 0, -1))
 
 	c := w.ColorAt(r)
 
-	if !c.Equal(inner.Material.Color) {
+	if !c.Equal(inner.GetMaterial().Color) {
 		t.Errorf("wrong color")
 	}
 }

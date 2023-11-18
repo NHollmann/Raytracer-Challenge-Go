@@ -15,6 +15,7 @@ type Shape interface {
 	localNormalAt(p tuple.Tuple) tuple.Tuple
 
 	GetMaterial() *material.Material
+	GetTransform() *matrix.Mat44
 }
 
 type BaseShape struct {
@@ -32,6 +33,10 @@ func NewShape() *BaseShape {
 
 func (s *BaseShape) GetMaterial() *material.Material {
 	return &s.Material
+}
+
+func (s *BaseShape) GetTransform() *matrix.Mat44 {
+	return &s.Transform
 }
 
 func (s *BaseShape) Intersect(r ray.Ray) Intersections {

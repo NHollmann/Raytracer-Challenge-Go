@@ -29,29 +29,34 @@ func main() {
 func renderImage() {
 	world := intersection.NewWorld()
 
-	floor := intersection.NewSphere()
-	floor.Transform = matrix.Scaling(10, 0.01, 10)
-	floor.Material.Color = color.New(1, 0.9, 0.9)
-	floor.Material.Specular = 0
-	world.AddObject(floor)
+	floor := intersection.NewPlane()
+	world.AddObject((*intersection.Sphere)(floor))
 
-	leftWall := intersection.NewSphere()
-	leftWall.Transform = matrix.
-		Translation(0, 0, 5).
-		Mul(matrix.RotationY(-math.Pi / 4.0)).
-		Mul(matrix.RotationX(math.Pi / 2.0)).
-		Mul(matrix.Scaling(10, 0.01, 10))
-	leftWall.Material = floor.Material
-	world.AddObject(leftWall)
+	/*
+		floor := intersection.NewSphere()
+		floor.Transform = matrix.Scaling(10, 0.01, 10)
+		floor.Material.Color = color.New(1, 0.9, 0.9)
+		floor.Material.Specular = 0
+		world.AddObject(floor)
 
-	rightWall := intersection.NewSphere()
-	rightWall.Transform = matrix.
-		Translation(0, 0, 5).
-		Mul(matrix.RotationY(math.Pi / 4.0)).
-		Mul(matrix.RotationX(math.Pi / 2.0)).
-		Mul(matrix.Scaling(10, 0.01, 10))
-	rightWall.Material = floor.Material
-	world.AddObject(rightWall)
+		leftWall := intersection.NewSphere()
+		leftWall.Transform = matrix.
+			Translation(0, 0, 5).
+			Mul(matrix.RotationY(-math.Pi / 4.0)).
+			Mul(matrix.RotationX(math.Pi / 2.0)).
+			Mul(matrix.Scaling(10, 0.01, 10))
+		leftWall.Material = floor.Material
+		world.AddObject(leftWall)
+
+		rightWall := intersection.NewSphere()
+		rightWall.Transform = matrix.
+			Translation(0, 0, 5).
+			Mul(matrix.RotationY(math.Pi / 4.0)).
+			Mul(matrix.RotationX(math.Pi / 2.0)).
+			Mul(matrix.Scaling(10, 0.01, 10))
+		rightWall.Material = floor.Material
+		world.AddObject(rightWall)
+	*/
 
 	middle := intersection.NewSphere()
 	middle.Transform = matrix.Translation(-0.5, 1, 0.5)
