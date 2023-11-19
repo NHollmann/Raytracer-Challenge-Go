@@ -7,19 +7,8 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
-func TestRingPatternConstructor(t *testing.T) {
-	p := pattern.NewRingPattern(WHITE, BLACK)
-
-	if !p.A.Equal(WHITE) {
-		t.Errorf("pattern A color wrong")
-	}
-	if !p.B.Equal(BLACK) {
-		t.Errorf("pattern A color wrong")
-	}
-}
-
 func TestRingPattern(t *testing.T) {
-	p := pattern.NewRingPattern(WHITE, BLACK)
+	p := pattern.NewRingPatternColor(WHITE, BLACK)
 
 	if !p.PatternAt(tuple.Point(0, 0, 0)).Equal(WHITE) {
 		t.Errorf("pattern result color wrong")

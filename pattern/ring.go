@@ -9,11 +9,11 @@ import (
 
 type RingPattern struct {
 	*BasePattern
-	A color.Color
-	B color.Color
+	A Pattern
+	B Pattern
 }
 
-func NewRingPattern(a, b color.Color) *RingPattern {
+func NewRingPattern(a, b Pattern) *RingPattern {
 	basePat := newBasePattern()
 	gradient := &RingPattern{
 		BasePattern: basePat,
@@ -24,10 +24,14 @@ func NewRingPattern(a, b color.Color) *RingPattern {
 	return gradient
 }
 
+func NewRingPatternColor(a, b color.Color) *RingPattern {
+	return NewRingPattern(NewSolidPattern(a), NewSolidPattern(b))
+}
+
 func (p *RingPattern) PatternAt(point tuple.Tuple) color.Color {
 	hypo := math.Sqrt(math.Pow(point.X(), 2) + math.Pow(point.Z(), 2))
 	if int64(math.Floor(hypo))%2 == 0 {
-		return p.A
+		return p.A.subPat(point)
 	}
-	return p.B
+	return p.B.subPat(point)
 }

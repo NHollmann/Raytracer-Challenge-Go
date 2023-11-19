@@ -8,19 +8,8 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
-func TestGradientPatternConstructor(t *testing.T) {
-	p := pattern.NewGradientPattern(WHITE, BLACK)
-
-	if !p.A.Equal(WHITE) {
-		t.Errorf("pattern A color wrong")
-	}
-	if !p.B.Equal(BLACK) {
-		t.Errorf("pattern A color wrong")
-	}
-}
-
 func TestGradientPatternX(t *testing.T) {
-	p := pattern.NewGradientPattern(WHITE, BLACK)
+	p := pattern.NewGradientPatternColor(WHITE, BLACK)
 
 	if !p.PatternAt(tuple.Point(0, 0, 0)).Equal(WHITE) {
 		t.Errorf("pattern result color wrong")

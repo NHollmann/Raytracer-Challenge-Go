@@ -10,6 +10,7 @@ type Pattern interface {
 	SetTransform(mat matrix.Mat44)
 	PatternAt(point tuple.Tuple) color.Color
 	PatternAtTransform(invTransform matrix.Mat44, worldPoint tuple.Tuple) color.Color
+	subPat(objectPoint tuple.Tuple) color.Color
 }
 
 type BasePattern struct {
@@ -29,6 +30,11 @@ func (p *BasePattern) SetTransform(mat matrix.Mat44) {
 
 func (p *BasePattern) PatternAtTransform(invTransform matrix.Mat44, worldPoint tuple.Tuple) color.Color {
 	objectPoint := invTransform.MulTuple(worldPoint)
+	patternPoint := p.invTransform.MulTuple(objectPoint)
+	return p.PatternAt(patternPoint)
+}
+
+func (p *BasePattern) subPat(objectPoint tuple.Tuple) color.Color {
 	patternPoint := p.invTransform.MulTuple(objectPoint)
 	return p.PatternAt(patternPoint)
 }

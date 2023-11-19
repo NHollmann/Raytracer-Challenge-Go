@@ -7,19 +7,8 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
-func TestCheckerPatternConstructor(t *testing.T) {
-	p := pattern.NewCheckerPattern(WHITE, BLACK)
-
-	if !p.A.Equal(WHITE) {
-		t.Errorf("pattern A color wrong")
-	}
-	if !p.B.Equal(BLACK) {
-		t.Errorf("pattern A color wrong")
-	}
-}
-
 func TestCheckerPatternX(t *testing.T) {
-	p := pattern.NewCheckerPattern(WHITE, BLACK)
+	p := pattern.NewCheckerPatternColor(WHITE, BLACK)
 
 	if !p.PatternAt(tuple.Point(0, 0, 0)).Equal(WHITE) {
 		t.Errorf("pattern result color wrong")
@@ -33,7 +22,7 @@ func TestCheckerPatternX(t *testing.T) {
 }
 
 func TestCheckerPatternY(t *testing.T) {
-	p := pattern.NewCheckerPattern(WHITE, BLACK)
+	p := pattern.NewCheckerPatternColor(WHITE, BLACK)
 
 	if !p.PatternAt(tuple.Point(0, 0, 0)).Equal(WHITE) {
 		t.Errorf("pattern result color wrong")
@@ -47,7 +36,7 @@ func TestCheckerPatternY(t *testing.T) {
 }
 
 func TestCheckerPatternZ(t *testing.T) {
-	p := pattern.NewCheckerPattern(WHITE, BLACK)
+	p := pattern.NewCheckerPatternColor(WHITE, BLACK)
 
 	if !p.PatternAt(tuple.Point(0, 0, 0)).Equal(WHITE) {
 		t.Errorf("pattern result color wrong")

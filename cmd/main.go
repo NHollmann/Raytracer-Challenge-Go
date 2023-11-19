@@ -31,8 +31,12 @@ func renderImage() {
 	world := intersection.NewWorld()
 
 	floor := intersection.NewPlane()
-	floor.Material.Pattern = pattern.NewCheckerPattern(color.New(0.6, 0.3, 0.6), color.New(1, 1, 1))
-	world.AddObject((*intersection.Sphere)(floor))
+	patA := pattern.NewStripePatternColor(color.New(0.8, 0, 0), color.New(0.4, 0, 0))
+	patB := pattern.NewStripePatternColor(color.New(0, 0.8, 0), color.New(0, 0.4, 0))
+	patA.SetTransform(matrix.RotationY(math.Pi / 4.0).Mul(matrix.Scaling(0.1, 0.1, 0.1)))
+	patB.SetTransform(matrix.RotationY(math.Pi / -4.0).Mul(matrix.Scaling(0.1, 0.1, 0.1)))
+	floor.Material.Pattern = pattern.NewCheckerPattern(patA, patB)
+	world.AddObject(floor)
 
 	/*
 		floor := intersection.NewSphere()
@@ -62,7 +66,7 @@ func renderImage() {
 
 	middle := intersection.NewSphere()
 	middle.Transform = matrix.Translation(-0.5, 1, 0.5)
-	middle.Material.Pattern = pattern.NewGradientPattern(color.New(0.2, 0.8, 0.0), color.New(1, 0.1, 0))
+	middle.Material.Pattern = pattern.NewGradientPatternColor(color.New(0.2, 0.8, 0.0), color.New(1, 0.1, 0))
 	middle.Material.Pattern.SetTransform(matrix.RotationY(math.Pi / 8.0).Mul(matrix.Scaling(2, 2, 2).Mul(matrix.Translation(0.5, 0, 0))))
 	middle.Material.Color = color.New(0.1, 1, 0.5)
 	middle.Material.Diffuse = 0.7

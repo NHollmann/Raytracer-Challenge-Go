@@ -9,11 +9,11 @@ import (
 
 type CheckerPattern struct {
 	*BasePattern
-	A color.Color
-	B color.Color
+	A Pattern
+	B Pattern
 }
 
-func NewCheckerPattern(a, b color.Color) *CheckerPattern {
+func NewCheckerPattern(a, b Pattern) *CheckerPattern {
 	basePat := newBasePattern()
 	gradient := &CheckerPattern{
 		BasePattern: basePat,
@@ -24,10 +24,14 @@ func NewCheckerPattern(a, b color.Color) *CheckerPattern {
 	return gradient
 }
 
+func NewCheckerPatternColor(a, b color.Color) *CheckerPattern {
+	return NewCheckerPattern(NewSolidPattern(a), NewSolidPattern(b))
+}
+
 func (p *CheckerPattern) PatternAt(point tuple.Tuple) color.Color {
 	sum := math.Floor(point.X()) + math.Floor(point.Y()) + math.Floor(point.Z())
 	if int64(math.Floor(sum))%2 == 0 {
-		return p.A
+		return p.A.subPat(point)
 	}
-	return p.B
+	return p.B.subPat(point)
 }

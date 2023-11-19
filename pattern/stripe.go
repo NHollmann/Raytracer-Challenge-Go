@@ -9,11 +9,11 @@ import (
 
 type StripePattern struct {
 	*BasePattern
-	A color.Color
-	B color.Color
+	A Pattern
+	B Pattern
 }
 
-func NewStripePattern(a, b color.Color) *StripePattern {
+func NewStripePattern(a, b Pattern) *StripePattern {
 	basePat := newBasePattern()
 	stripe := &StripePattern{
 		BasePattern: basePat,
@@ -24,9 +24,13 @@ func NewStripePattern(a, b color.Color) *StripePattern {
 	return stripe
 }
 
+func NewStripePatternColor(a, b color.Color) *StripePattern {
+	return NewStripePattern(NewSolidPattern(a), NewSolidPattern(b))
+}
+
 func (p *StripePattern) PatternAt(point tuple.Tuple) color.Color {
 	if int64(math.Floor(point.X()))%2 == 0 {
-		return p.A
+		return p.A.subPat(point)
 	}
-	return p.B
+	return p.B.subPat(point)
 }

@@ -141,7 +141,7 @@ func TestMaterialShadingESLShadow(t *testing.T) {
 
 func TestMaterialPattern(t *testing.T) {
 	m := material.New()
-	m.Pattern = pattern.NewStripePattern(color.New(1, 1, 1), color.New(0, 0, 0))
+	m.Pattern = pattern.NewStripePatternColor(color.New(1, 1, 1), color.New(0, 0, 0))
 	m.Ambient = 1
 	m.Diffuse = 0
 	m.Specular = 0
