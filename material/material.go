@@ -5,10 +5,12 @@ import (
 
 	"github.com/NHollmann/Raytracer-Challenge-Go/color"
 	"github.com/NHollmann/Raytracer-Challenge-Go/light"
+	"github.com/NHollmann/Raytracer-Challenge-Go/pattern"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type Material struct {
+	Pattern   *pattern.StripePattern
 	Color     color.Color
 	Ambient   float64
 	Diffuse   float64
@@ -18,6 +20,7 @@ type Material struct {
 
 func New() Material {
 	return Material{
+		Pattern:   nil,
 		Color:     color.New(1, 1, 1),
 		Ambient:   0.1,
 		Diffuse:   0.9,
@@ -27,7 +30,12 @@ func New() Material {
 }
 
 func (m *Material) Lighting(l light.PointLight, point, eyev, normalv tuple.Tuple, inShadow bool) color.Color {
-	effectiveColor := m.Color.MulColor(l.Intensity)
+	matColor := m.Color
+	if m.Pattern != nil {
+		matColor = m.Pattern.PatternAt(point)
+	}
+
+	effectiveColor := matColor.MulColor(l.Intensity)
 	lightv := l.Position.Sub(point).Normalize()
 	ambient := effectiveColor.MulScalar(m.Ambient)
 	diffuse := color.New(0, 0, 0)

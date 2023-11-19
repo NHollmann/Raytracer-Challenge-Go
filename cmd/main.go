@@ -10,6 +10,7 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/intersection"
 	"github.com/NHollmann/Raytracer-Challenge-Go/light"
 	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
+	"github.com/NHollmann/Raytracer-Challenge-Go/pattern"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
@@ -30,6 +31,7 @@ func renderImage() {
 	world := intersection.NewWorld()
 
 	floor := intersection.NewPlane()
+	floor.Material.Pattern = pattern.NewStripePattern(color.New(0.6, 0.3, 0.6), color.New(1, 1, 1))
 	world.AddObject((*intersection.Sphere)(floor))
 
 	/*

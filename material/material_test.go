@@ -8,6 +8,7 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 	"github.com/NHollmann/Raytracer-Challenge-Go/light"
 	"github.com/NHollmann/Raytracer-Challenge-Go/material"
+	"github.com/NHollmann/Raytracer-Challenge-Go/pattern"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
@@ -19,6 +20,9 @@ import (
 func TestMaterialConstructor(t *testing.T) {
 	m := material.New()
 
+	if m.Pattern != nil {
+		t.Errorf("material default pattern is not nil")
+	}
 	if !m.Color.Equal(color.New(1, 1, 1)) {
 		t.Errorf("material default color wrong")
 	}
@@ -130,6 +134,27 @@ func TestMaterialShadingESLShadow(t *testing.T) {
 	result := m.Lighting(l, pos, eyev, normalv, true)
 
 	if !result.Equal(color.New(0.1, 0.1, 0.1)) {
+		t.Errorf("lighting result color wrong")
+	}
+}
+
+func TestMaterialPattern(t *testing.T) {
+	m := material.New()
+	m.Pattern = pattern.NewStripePattern(color.New(1, 1, 1), color.New(0, 0, 0))
+	m.Ambient = 1
+	m.Diffuse = 0
+	m.Specular = 0
+	eyev := tuple.Vector(0, 0, -1)
+	normalv := tuple.Vector(0, 0, -1)
+	l := light.NewPoint(tuple.Point(0, 0, -10), color.New(1, 1, 1))
+
+	result1 := m.Lighting(l, tuple.Point(0.9, 0, 0), eyev, normalv, false)
+	if !result1.Equal(color.New(1, 1, 1)) {
+		t.Errorf("lighting result color wrong")
+	}
+
+	result2 := m.Lighting(l, tuple.Point(1.1, 0, 0), eyev, normalv, false)
+	if !result2.Equal(color.New(0, 0, 0)) {
 		t.Errorf("lighting result color wrong")
 	}
 }
