@@ -4,26 +4,24 @@ import (
 	"math"
 
 	"github.com/NHollmann/Raytracer-Challenge-Go/color"
-	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
 type StripePattern struct {
-	A            color.Color
-	B            color.Color
-	invTransform matrix.Mat44
+	*BasePattern
+	A color.Color
+	B color.Color
 }
 
 func NewStripePattern(a, b color.Color) *StripePattern {
-	return &StripePattern{
-		A:            a,
-		B:            b,
-		invTransform: matrix.Identity44(),
+	basePat := newBasePattern()
+	stripe := &StripePattern{
+		BasePattern: basePat,
+		A:           a,
+		B:           b,
 	}
-}
-
-func (p *StripePattern) SetTransform(mat matrix.Mat44) {
-	p.invTransform = mat.Inverse()
+	basePat.Pattern = stripe
+	return stripe
 }
 
 func (p *StripePattern) PatternAt(point tuple.Tuple) color.Color {
@@ -31,10 +29,4 @@ func (p *StripePattern) PatternAt(point tuple.Tuple) color.Color {
 		return p.A
 	}
 	return p.B
-}
-
-func (p *StripePattern) PatternAtTransform(invTransform matrix.Mat44, worldPoint tuple.Tuple) color.Color {
-	objectPoint := invTransform.MulTuple(worldPoint)
-	patternPoint := p.invTransform.MulTuple(objectPoint)
-	return p.PatternAt(patternPoint)
 }

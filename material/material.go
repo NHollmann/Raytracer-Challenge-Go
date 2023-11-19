@@ -11,7 +11,7 @@ import (
 )
 
 type Material struct {
-	Pattern   *pattern.StripePattern
+	Pattern   pattern.Pattern
 	Color     color.Color
 	Ambient   float64
 	Diffuse   float64

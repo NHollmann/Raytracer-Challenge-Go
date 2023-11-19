@@ -3,14 +3,10 @@ package pattern_test
 import (
 	"testing"
 
-	"github.com/NHollmann/Raytracer-Challenge-Go/color"
 	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 	"github.com/NHollmann/Raytracer-Challenge-Go/pattern"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
-
-var BLACK = color.New(0, 0, 0)
-var WHITE = color.New(1, 1, 1)
 
 func TestStripePatternConstructor(t *testing.T) {
 	p := pattern.NewStripePattern(WHITE, BLACK)
