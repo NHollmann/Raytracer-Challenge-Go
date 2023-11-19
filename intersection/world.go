@@ -64,6 +64,7 @@ func (w *World) ShadeHit(comps PreparedComps) color.Color {
 		shadowed := w.IsShadowed(comps.OverPoint, light)
 		result = result.Add(comps.Object.GetMaterial().Lighting(
 			light,
+			comps.Object.GetTransform().Inverse(),
 			comps.OverPoint,
 			comps.EyeV,
 			comps.NormalV,

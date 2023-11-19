@@ -8,6 +8,7 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 	"github.com/NHollmann/Raytracer-Challenge-Go/light"
 	"github.com/NHollmann/Raytracer-Challenge-Go/material"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 	"github.com/NHollmann/Raytracer-Challenge-Go/pattern"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
@@ -47,7 +48,7 @@ func TestMaterialShadingLES(t *testing.T) {
 	eyev := tuple.Vector(0, 0, -1)
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 0, -10), color.New(1, 1, 1))
-	result := m.Lighting(l, pos, eyev, normalv, false)
+	result := m.Lighting(l, matrix.Identity44(), pos, eyev, normalv, false)
 
 	if !result.Equal(color.New(1.9, 1.9, 1.9)) {
 		t.Errorf("lighting result color wrong")
@@ -61,7 +62,7 @@ func TestMaterialShadingLESShadow(t *testing.T) {
 	eyev := tuple.Vector(0, 0, -1)
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 0, -10), color.New(1, 1, 1))
-	result := m.Lighting(l, pos, eyev, normalv, true)
+	result := m.Lighting(l, matrix.Identity44(), pos, eyev, normalv, true)
 
 	if !result.Equal(color.New(0.1, 0.1, 0.1)) {
 		t.Errorf("lighting result color wrong")
@@ -75,7 +76,7 @@ func TestMaterialShadingLESO45(t *testing.T) {
 	eyev := tuple.Vector(0, math.Sqrt(2)/2.0, -math.Sqrt(2)/2.0)
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 0, -10), color.New(1, 1, 1))
-	result := m.Lighting(l, pos, eyev, normalv, false)
+	result := m.Lighting(l, matrix.Identity44(), pos, eyev, normalv, false)
 
 	if !result.Equal(color.New(1.0, 1.0, 1.0)) {
 		t.Errorf("lighting result color wrong")
@@ -89,7 +90,7 @@ func TestMaterialShadingESLO45(t *testing.T) {
 	eyev := tuple.Vector(0, 0, -1)
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 10, -10), color.New(1, 1, 1))
-	result := m.Lighting(l, pos, eyev, normalv, false)
+	result := m.Lighting(l, matrix.Identity44(), pos, eyev, normalv, false)
 
 	if !result.Equal(color.New(0.7364, 0.7364, 0.7364)) {
 		t.Errorf("lighting result color wrong")
@@ -103,7 +104,7 @@ func TestMaterialShadingEO45LO45(t *testing.T) {
 	eyev := tuple.Vector(0, -math.Sqrt(2)/2.0, -math.Sqrt(2)/2.0)
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 10, -10), color.New(1, 1, 1))
-	result := m.Lighting(l, pos, eyev, normalv, false)
+	result := m.Lighting(l, matrix.Identity44(), pos, eyev, normalv, false)
 
 	if !result.Equal(color.New(1.6364, 1.6364, 1.6364)) {
 		t.Errorf("lighting result color wrong")
@@ -117,7 +118,7 @@ func TestMaterialShadingESL(t *testing.T) {
 	eyev := tuple.Vector(0, 0, -1)
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 0, 10), color.New(1, 1, 1))
-	result := m.Lighting(l, pos, eyev, normalv, false)
+	result := m.Lighting(l, matrix.Identity44(), pos, eyev, normalv, false)
 
 	if !result.Equal(color.New(0.1, 0.1, 0.1)) {
 		t.Errorf("lighting result color wrong")
@@ -131,7 +132,7 @@ func TestMaterialShadingESLShadow(t *testing.T) {
 	eyev := tuple.Vector(0, 0, -1)
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 0, -10), color.New(1, 1, 1))
-	result := m.Lighting(l, pos, eyev, normalv, true)
+	result := m.Lighting(l, matrix.Identity44(), pos, eyev, normalv, true)
 
 	if !result.Equal(color.New(0.1, 0.1, 0.1)) {
 		t.Errorf("lighting result color wrong")
@@ -148,12 +149,12 @@ func TestMaterialPattern(t *testing.T) {
 	normalv := tuple.Vector(0, 0, -1)
 	l := light.NewPoint(tuple.Point(0, 0, -10), color.New(1, 1, 1))
 
-	result1 := m.Lighting(l, tuple.Point(0.9, 0, 0), eyev, normalv, false)
+	result1 := m.Lighting(l, matrix.Identity44(), tuple.Point(0.9, 0, 0), eyev, normalv, false)
 	if !result1.Equal(color.New(1, 1, 1)) {
 		t.Errorf("lighting result color wrong")
 	}
 
-	result2 := m.Lighting(l, tuple.Point(1.1, 0, 0), eyev, normalv, false)
+	result2 := m.Lighting(l, matrix.Identity44(), tuple.Point(1.1, 0, 0), eyev, normalv, false)
 	if !result2.Equal(color.New(0, 0, 0)) {
 		t.Errorf("lighting result color wrong")
 	}

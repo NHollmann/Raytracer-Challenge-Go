@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/NHollmann/Raytracer-Challenge-Go/color"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 	"github.com/NHollmann/Raytracer-Challenge-Go/pattern"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
@@ -69,6 +70,35 @@ func TestStripePatternAlternateX(t *testing.T) {
 		t.Errorf("pattern result color wrong")
 	}
 	if !p.PatternAt(tuple.Point(-1.1, 0, 0)).Equal(WHITE) {
+		t.Errorf("pattern result color wrong")
+	}
+}
+
+func TestStripePatternObjectTransform(t *testing.T) {
+	p := pattern.NewStripePattern(WHITE, BLACK)
+	mat := matrix.Scaling(2, 2, 2).Inverse()
+
+	if !p.PatternAtTransform(mat, tuple.Point(1.5, 0, 0)).Equal(WHITE) {
+		t.Errorf("pattern result color wrong")
+	}
+}
+
+func TestStripePatternTransform(t *testing.T) {
+	p := pattern.NewStripePattern(WHITE, BLACK)
+	p.SetTransform(matrix.Scaling(2, 2, 2))
+	mat := matrix.Identity44().Inverse()
+
+	if !p.PatternAtTransform(mat, tuple.Point(1.5, 0, 0)).Equal(WHITE) {
+		t.Errorf("pattern result color wrong")
+	}
+}
+
+func TestStripePatternBoothTransform(t *testing.T) {
+	p := pattern.NewStripePattern(WHITE, BLACK)
+	p.SetTransform(matrix.Translation(0.5, 0, 0))
+	mat := matrix.Scaling(2, 2, 2).Inverse()
+
+	if !p.PatternAtTransform(mat, tuple.Point(2.5, 0, 0)).Equal(WHITE) {
 		t.Errorf("pattern result color wrong")
 	}
 }

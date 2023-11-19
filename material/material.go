@@ -5,6 +5,7 @@ import (
 
 	"github.com/NHollmann/Raytracer-Challenge-Go/color"
 	"github.com/NHollmann/Raytracer-Challenge-Go/light"
+	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 	"github.com/NHollmann/Raytracer-Challenge-Go/pattern"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
@@ -29,10 +30,10 @@ func New() Material {
 	}
 }
 
-func (m *Material) Lighting(l light.PointLight, point, eyev, normalv tuple.Tuple, inShadow bool) color.Color {
+func (m *Material) Lighting(l light.PointLight, invTransform matrix.Mat44, point, eyev, normalv tuple.Tuple, inShadow bool) color.Color {
 	matColor := m.Color
 	if m.Pattern != nil {
-		matColor = m.Pattern.PatternAt(point)
+		matColor = m.Pattern.PatternAtTransform(invTransform, point)
 	}
 
 	effectiveColor := matColor.MulColor(l.Intensity)
