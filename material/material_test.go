@@ -39,6 +39,9 @@ func TestMaterialConstructor(t *testing.T) {
 	if !flt.Equal(m.Shininess, 200.0) {
 		t.Errorf("material default shininess wrong")
 	}
+	if !flt.Equal(m.Reflective, 0.0) {
+		t.Errorf("material default reflective wrong")
+	}
 }
 
 // Eye between light and surface

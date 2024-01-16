@@ -232,3 +232,17 @@ func TestShadeHitShadow(t *testing.T) {
 		t.Errorf("wrong color")
 	}
 }
+
+func TestWorldReflectedColorOfNonreflective(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	r := ray.New(tuple.Point(0, 0, 0), tuple.Vector(0, 0, 1))
+	w.Objects[1].GetMaterial().Ambient = 1
+	i := intersection.NewIntersection(1, w.Objects[1])
+
+	comps := i.PrepareComputations(r)
+	c := w.ReflectedColor(comps)
+
+	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
+		t.Errorf("wrong color")
+	}
+}

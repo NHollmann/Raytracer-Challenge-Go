@@ -86,6 +86,11 @@ func (w *World) ColorAt(r ray.Ray) color.Color {
 	return w.ShadeHit(comps)
 }
 
+func (w *World) ReflectedColor(comps PreparedComps) color.Color {
+	// TODO
+	return color.New(0.0, 0.0, 0.0)
+}
+
 func (w *World) IsShadowed(point tuple.Tuple, l light.PointLight) bool {
 	v := l.Position.Sub(point)
 	distance := v.Magnitude()

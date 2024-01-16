@@ -11,22 +11,24 @@ import (
 )
 
 type Material struct {
-	Pattern   pattern.Pattern
-	Color     color.Color
-	Ambient   float64
-	Diffuse   float64
-	Specular  float64
-	Shininess float64
+	Pattern    pattern.Pattern
+	Color      color.Color
+	Ambient    float64
+	Diffuse    float64
+	Specular   float64
+	Shininess  float64
+	Reflective float64
 }
 
 func New() Material {
 	return Material{
-		Pattern:   nil,
-		Color:     color.New(1, 1, 1),
-		Ambient:   0.1,
-		Diffuse:   0.9,
-		Specular:  0.9,
-		Shininess: 200.0,
+		Pattern:    nil,
+		Color:      color.New(1, 1, 1),
+		Ambient:    0.1,
+		Diffuse:    0.9,
+		Specular:   0.9,
+		Shininess:  200.0,
+		Reflective: 0.0,
 	}
 }
 

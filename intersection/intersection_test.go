@@ -1,6 +1,7 @@
 package intersection_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
@@ -143,6 +144,17 @@ func TestPrecomputeIntersectionInside(t *testing.T) {
 	}
 	if !comps.Inside {
 		t.Errorf("should be inside")
+	}
+}
+
+func TestPrecomputeReflectV(t *testing.T) {
+	r := ray.New(tuple.Point(0, 1, -1), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
+	shape := intersection.NewPlane()
+	i := intersection.NewIntersection(math.Sqrt(2), shape)
+
+	comps := i.PrepareComputations(r)
+	if !tuple.Vector(0, math.Sqrt(2)/2.0, math.Sqrt(2)/2.0).Equal(comps.ReflectV) {
+		t.Errorf("wrong reflectV")
 	}
 }
 
