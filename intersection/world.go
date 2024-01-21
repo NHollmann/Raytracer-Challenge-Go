@@ -2,6 +2,7 @@ package intersection
 
 import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/color"
+	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 	"github.com/NHollmann/Raytracer-Challenge-Go/light"
 	"github.com/NHollmann/Raytracer-Challenge-Go/matrix"
 	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
@@ -57,25 +58,29 @@ func (w *World) Intersect(r ray.Ray) Intersections {
 	return result
 }
 
-func (w *World) ShadeHit(comps PreparedComps) color.Color {
+func (w *World) ShadeHit(comps PreparedComps, remaining int) color.Color {
 	result := color.New(0, 0, 0)
 
 	for _, light := range w.Lights {
 		shadowed := w.IsShadowed(comps.OverPoint, light)
-		result = result.Add(comps.Object.GetMaterial().Lighting(
+		surface := comps.Object.GetMaterial().Lighting(
 			light,
 			comps.Object.GetTransform().Inverse(),
 			comps.OverPoint,
 			comps.EyeV,
 			comps.NormalV,
 			shadowed,
-		))
+		)
+
+		result = result.Add(surface)
 	}
 
-	return result
+	reflected := w.ReflectedColor(comps, remaining)
+
+	return result.Add(reflected)
 }
 
-func (w *World) ColorAt(r ray.Ray) color.Color {
+func (w *World) ColorAt(r ray.Ray, remaining int) color.Color {
 	xs := w.Intersect(r)
 	hit := xs.Hit()
 	if hit == nil {
@@ -83,12 +88,19 @@ func (w *World) ColorAt(r ray.Ray) color.Color {
 	}
 
 	comps := hit.PrepareComputations(r)
-	return w.ShadeHit(comps)
+	return w.ShadeHit(comps, remaining)
 }
 
-func (w *World) ReflectedColor(comps PreparedComps) color.Color {
-	// TODO
-	return color.New(0.0, 0.0, 0.0)
+func (w *World) ReflectedColor(comps PreparedComps, remaining int) color.Color {
+	if remaining < 1 {
+		return color.New(0.0, 0.0, 0.0)
+	}
+	if flt.Equal(comps.Object.GetMaterial().Reflective, 0.0) {
+		return color.New(0.0, 0.0, 0.0)
+	}
+	reflectedRay := ray.New(comps.OverPoint, comps.ReflectV)
+	c := w.ColorAt(reflectedRay, remaining-1)
+	return c.MulScalar(comps.Object.GetMaterial().Reflective)
 }
 
 func (w *World) IsShadowed(point tuple.Tuple, l light.PointLight) bool {

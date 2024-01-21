@@ -71,6 +71,7 @@ func renderImage() {
 	middle.Material.Color = color.New(0.1, 1, 0.5)
 	middle.Material.Diffuse = 0.7
 	middle.Material.Specular = 0.3
+	middle.Material.Reflective = 0.5
 	world.AddObject(middle)
 
 	right := intersection.NewSphere()
@@ -78,13 +79,14 @@ func renderImage() {
 	right.Material.Color = color.New(0.5, 1, 0.1)
 	right.Material.Diffuse = 0.7
 	right.Material.Specular = 0.3
+	right.Material.Reflective = 0.3
 	world.AddObject(right)
 
 	left := intersection.NewSphere()
 	left.Transform = matrix.Translation(-1.5, 0.33, -0.75).Mul(matrix.Scaling(0.33, 0.33, 0.33))
 	left.Material.Color = color.New(1, 0.8, 0.1)
 	left.Material.Diffuse = 0.7
-	left.Material.Specular = 0.3
+	left.Material.Specular = 0.1
 	world.AddObject(left)
 
 	lightSource := light.NewPoint(tuple.Point(-10, 10, -10), color.New(1, 1, 1))

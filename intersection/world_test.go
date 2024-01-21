@@ -1,6 +1,7 @@
 package intersection_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/NHollmann/Raytracer-Challenge-Go/color"
@@ -11,6 +12,8 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/ray"
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
+
+const DEFAULT_RECURSION_MAX = 5
 
 func TestWorldConstructor(t *testing.T) {
 	w := intersection.NewWorld()
@@ -120,7 +123,7 @@ func TestWorldShade(t *testing.T) {
 	i := intersection.NewIntersection(4, shape)
 	comps := i.PrepareComputations(r)
 
-	c := w.ShadeHit(comps)
+	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
 	if !c.Equal(color.New(0.38066, 0.47583, 0.2855)) {
 		t.Errorf("wrong color")
 	}
@@ -134,7 +137,7 @@ func TestWorldShadeInside(t *testing.T) {
 	i := intersection.NewIntersection(0.5, shape)
 	comps := i.PrepareComputations(r)
 
-	c := w.ShadeHit(comps)
+	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
 	if !c.Equal(color.New(0.90498, 0.90498, 0.90498)) {
 		t.Errorf("wrong color")
 	}
@@ -144,7 +147,7 @@ func TestWorldColorAtMiss(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 1, 0))
 
-	c := w.ColorAt(r)
+	c := w.ColorAt(r, DEFAULT_RECURSION_MAX)
 
 	if !c.Equal(color.New(0, 0, 0)) {
 		t.Errorf("wrong color")
@@ -155,7 +158,7 @@ func TestWorldColorAtOutside(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 
-	c := w.ColorAt(r)
+	c := w.ColorAt(r, DEFAULT_RECURSION_MAX)
 
 	if !c.Equal(color.New(0.38066, 0.47583, 0.2855)) {
 		t.Errorf("wrong color")
@@ -169,7 +172,7 @@ func TestWorldColorAtInside(t *testing.T) {
 	inner := w.Objects[1]
 	r := ray.New(tuple.Point(0, 0, 0.75), tuple.Vector(0, 0, -1))
 
-	c := w.ColorAt(r)
+	c := w.ColorAt(r, DEFAULT_RECURSION_MAX)
 
 	if !c.Equal(inner.GetMaterial().Color) {
 		t.Errorf("wrong color")
@@ -227,7 +230,7 @@ func TestShadeHitShadow(t *testing.T) {
 	i := intersection.NewIntersection(4, s2)
 
 	comps := i.PrepareComputations(r)
-	c := w.ShadeHit(comps)
+	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
 	if !c.Equal(color.New(0.1, 0.1, 0.1)) {
 		t.Errorf("wrong color")
 	}
@@ -240,9 +243,83 @@ func TestWorldReflectedColorOfNonreflective(t *testing.T) {
 	i := intersection.NewIntersection(1, w.Objects[1])
 
 	comps := i.PrepareComputations(r)
-	c := w.ReflectedColor(comps)
+	c := w.ReflectedColor(comps, DEFAULT_RECURSION_MAX)
 
 	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
-		t.Errorf("wrong color")
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldReflectedColor(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	shape := intersection.NewPlane()
+	shape.GetMaterial().Reflective = 0.5
+	shape.Transform = matrix.Translation(0, -1, 0)
+	w.AddObject(shape)
+	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
+	i := intersection.NewIntersection(math.Sqrt(2), shape)
+
+	comps := i.PrepareComputations(r)
+	c := w.ReflectedColor(comps, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(0.190332, 0.23791, 0.142749)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldReflectedShadeHit(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	shape := intersection.NewPlane()
+	shape.GetMaterial().Reflective = 0.5
+	shape.Transform = matrix.Translation(0, -1, 0)
+	w.AddObject(shape)
+	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
+	i := intersection.NewIntersection(math.Sqrt(2), shape)
+
+	comps := i.PrepareComputations(r)
+	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(0.876757, 0.92434, 0.829174)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldReflectedEndlessRecursion(t *testing.T) {
+	w := intersection.NewWorld()
+	pLight := light.NewPoint(tuple.Point(0, 0, 0), color.New(1, 1, 1))
+	w.AddLight(pLight)
+
+	lower := intersection.NewPlane()
+	lower.GetMaterial().Reflective = 1.0
+	lower.Transform = matrix.Translation(0, -1, 0)
+	w.AddObject(lower)
+
+	upper := intersection.NewPlane()
+	upper.GetMaterial().Reflective = 1.0
+	upper.Transform = matrix.Translation(0, 1, 0)
+	w.AddObject(upper)
+
+	r := ray.New(tuple.Point(0, 0, 0), tuple.Vector(0, 1, 0))
+	c := w.ColorAt(r, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(11.4, 11.4, 11.4)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldReflectedMaxDepth(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	shape := intersection.NewPlane()
+	shape.GetMaterial().Reflective = 0.5
+	shape.Transform = matrix.Translation(0, -1, 0)
+	w.AddObject(shape)
+	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
+	i := intersection.NewIntersection(math.Sqrt(2), shape)
+
+	comps := i.PrepareComputations(r)
+	c := w.ReflectedColor(comps, 0)
+
+	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
+		t.Errorf("wrong color %+v", c)
 	}
 }

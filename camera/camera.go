@@ -10,6 +10,8 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
+const MAX_RECUSRION_DEPTH = 5
+
 type Camera struct {
 	Hsize       uint32
 	Vsize       uint32
@@ -65,7 +67,7 @@ func (c *Camera) Render(w intersection.World) canvas.Canvas {
 	for y := uint32(0); y < c.Vsize; y++ {
 		for x := uint32(0); x < c.Hsize; x++ {
 			pixelRay := c.RayForPixel(float64(x), float64(y))
-			pixelColor := w.ColorAt(pixelRay)
+			pixelColor := w.ColorAt(pixelRay, MAX_RECUSRION_DEPTH)
 			image.SetPixel(x, y, pixelColor)
 		}
 	}
