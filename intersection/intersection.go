@@ -24,6 +24,8 @@ type PreparedComps struct {
 	NormalV   tuple.Tuple
 	ReflectV  tuple.Tuple
 	Inside    bool
+	N1        float64 // Refractive index of exiting material
+	N2        float64 // Refractive index of entering material
 }
 
 func NewIntersection(T float64, Object Shape) Intersection {

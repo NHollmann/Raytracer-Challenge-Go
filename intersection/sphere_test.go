@@ -12,6 +12,13 @@ import (
 	"github.com/NHollmann/Raytracer-Challenge-Go/tuple"
 )
 
+func NewGlassSphere() *intersection.Sphere {
+	s := intersection.NewSphere()
+	s.Material.Transparency = 1.0
+	s.Material.RefractiveIndex = 1.5
+	return s
+}
+
 func TestSphereDefaultTransform(t *testing.T) {
 	s := intersection.NewSphere()
 

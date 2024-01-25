@@ -168,3 +168,48 @@ func TestHitOffsetPoint(t *testing.T) {
 		t.Errorf("over point wrong")
 	}
 }
+
+func TestFindN1AndN2(t *testing.T) {
+	cs := []struct {
+		index int
+		n1    float64
+		n2    float64
+	}{
+		{0, 1.0, 1.5},
+		{1, 1.5, 2.0},
+		{2, 2.0, 2.5},
+		{3, 2.5, 2.5},
+		{4, 2.5, 1.5},
+		{5, 1.5, 1.0},
+	}
+
+	a := NewGlassSphere()
+	a.Transform = matrix.Scaling(2, 2, 2)
+	a.Material.RefractiveIndex = 1.5
+
+	b := NewGlassSphere()
+	b.Transform = matrix.Translation(0, 0, -0.25)
+	b.Material.RefractiveIndex = 2.0
+
+	c := NewGlassSphere()
+	c.Transform = matrix.Translation(0, 0, 0.25)
+	c.Material.RefractiveIndex = 2.5
+
+	r := ray.New(tuple.Point(0, 0, -4), tuple.Vector(0, 0, 1))
+
+	i1 := intersection.NewIntersection(2.0, a)
+	i2 := intersection.NewIntersection(2.75, b)
+	i3 := intersection.NewIntersection(3.25, c)
+	i4 := intersection.NewIntersection(4.75, b)
+	i5 := intersection.NewIntersection(5.25, c)
+	i6 := intersection.NewIntersection(6.0, a)
+	xs := intersection.Intersections{i1, i2, i3, i4, i5, i6}
+
+	for _, c := range cs {
+
+		comps := xs[c.index].PrepareComputations(r)
+		if !flt.Equal(comps.N1, c.n1) || !flt.Equal(comps.N2, c.n2) {
+			t.Errorf("wrong n1 or n2 at index %d", c.index)
+		}
+	}
+}
