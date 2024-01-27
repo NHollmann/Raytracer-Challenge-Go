@@ -1,6 +1,8 @@
 package intersection
 
 import (
+	"math"
+
 	"github.com/NHollmann/Raytracer-Challenge-Go/color"
 	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
 	"github.com/NHollmann/Raytracer-Challenge-Go/light"
@@ -76,8 +78,9 @@ func (w *World) ShadeHit(comps PreparedComps, remaining int) color.Color {
 	}
 
 	reflected := w.ReflectedColor(comps, remaining)
+	refracted := w.RefractedColor(comps, remaining)
 
-	return result.Add(reflected)
+	return result.Add(reflected).Add(refracted)
 }
 
 func (w *World) ColorAt(r ray.Ray, remaining int) color.Color {
@@ -87,7 +90,7 @@ func (w *World) ColorAt(r ray.Ray, remaining int) color.Color {
 		return color.New(0, 0, 0)
 	}
 
-	comps := hit.PrepareComputations(r)
+	comps := hit.PrepareComputations(r, xs)
 	return w.ShadeHit(comps, remaining)
 }
 
@@ -101,6 +104,30 @@ func (w *World) ReflectedColor(comps PreparedComps, remaining int) color.Color {
 	reflectedRay := ray.New(comps.OverPoint, comps.ReflectV)
 	c := w.ColorAt(reflectedRay, remaining-1)
 	return c.MulScalar(comps.Object.GetMaterial().Reflective)
+}
+
+func (w *World) RefractedColor(comps PreparedComps, remaining int) color.Color {
+	if remaining < 1 {
+		return color.New(0.0, 0.0, 0.0)
+	}
+	if flt.Equal(comps.Object.GetMaterial().Transparency, 0.0) {
+		return color.New(0.0, 0.0, 0.0)
+	}
+
+	nRatio := comps.N1 / comps.N2
+	cosI := comps.EyeV.Dot(comps.NormalV)
+	sin2t := nRatio * nRatio * (1 - cosI*cosI)
+	if sin2t > 1.0 {
+		return color.New(0.0, 0.0, 0.0)
+	}
+
+	cosT := math.Sqrt(1.0 - sin2t)
+	direction := comps.NormalV.Mul(nRatio*cosI - cosT).Sub(comps.EyeV.Mul(nRatio))
+	refractedRay := ray.New(comps.UnderPoint, direction)
+	result := w.ColorAt(refractedRay, remaining-1)
+	result = result.MulScalar(comps.Object.GetMaterial().Transparency)
+
+	return result
 }
 
 func (w *World) IsShadowed(point tuple.Tuple, l light.PointLight) bool {

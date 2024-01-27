@@ -121,7 +121,7 @@ func TestWorldShade(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := w.Objects[0]
 	i := intersection.NewIntersection(4, shape)
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 
 	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
 	if !c.Equal(color.New(0.38066, 0.47583, 0.2855)) {
@@ -135,7 +135,7 @@ func TestWorldShadeInside(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, 0), tuple.Vector(0, 0, 1))
 	shape := w.Objects[1]
 	i := intersection.NewIntersection(0.5, shape)
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 
 	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
 	if !c.Equal(color.New(0.90498, 0.90498, 0.90498)) {
@@ -229,7 +229,7 @@ func TestShadeHitShadow(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, 5), tuple.Vector(0, 0, 1))
 	i := intersection.NewIntersection(4, s2)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
 	if !c.Equal(color.New(0.1, 0.1, 0.1)) {
 		t.Errorf("wrong color")
@@ -242,7 +242,7 @@ func TestWorldReflectedColorOfNonreflective(t *testing.T) {
 	w.Objects[1].GetMaterial().Ambient = 1
 	i := intersection.NewIntersection(1, w.Objects[1])
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	c := w.ReflectedColor(comps, DEFAULT_RECURSION_MAX)
 
 	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
@@ -259,7 +259,7 @@ func TestWorldReflectedColor(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
 	i := intersection.NewIntersection(math.Sqrt(2), shape)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	c := w.ReflectedColor(comps, DEFAULT_RECURSION_MAX)
 
 	if !c.Equal(color.New(0.190332, 0.23791, 0.142749)) {
@@ -276,7 +276,7 @@ func TestWorldReflectedShadeHit(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
 	i := intersection.NewIntersection(math.Sqrt(2), shape)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
 
 	if !c.Equal(color.New(0.876757, 0.92434, 0.829174)) {
@@ -316,10 +316,88 @@ func TestWorldReflectedMaxDepth(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
 	i := intersection.NewIntersection(math.Sqrt(2), shape)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	c := w.ReflectedColor(comps, 0)
 
 	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldRefractedColorOfNonrefracted(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	shape := w.Objects[0]
+	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
+	i1 := intersection.NewIntersection(4, shape)
+	i2 := intersection.NewIntersection(6, shape)
+	xs := intersection.Intersections{i1, i2}
+
+	comps := xs[0].PrepareComputations(r, xs)
+	c := w.RefractedColor(comps, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldRefractedMaxDepth(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	shape := w.Objects[0]
+	shape.GetMaterial().Transparency = 1.0
+	shape.GetMaterial().RefractiveIndex = 1.5
+
+	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
+	i1 := intersection.NewIntersection(4, shape)
+	i2 := intersection.NewIntersection(6, shape)
+	xs := intersection.Intersections{i1, i2}
+
+	comps := xs[0].PrepareComputations(r, xs)
+	c := w.RefractedColor(comps, 0)
+
+	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldRefractedTotalInternalReflection(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	shape := w.Objects[0]
+	shape.GetMaterial().Transparency = 1.0
+	shape.GetMaterial().RefractiveIndex = 1.5
+
+	r := ray.New(tuple.Point(0, 0, math.Sqrt(2.0)/2.0), tuple.Vector(0, 1, 0))
+	i1 := intersection.NewIntersection(-math.Sqrt(2.0)/2.0, shape)
+	i2 := intersection.NewIntersection(math.Sqrt(2.0)/2.0, shape)
+	xs := intersection.Intersections{i1, i2}
+
+	comps := xs[1].PrepareComputations(r, xs)
+	c := w.RefractedColor(comps, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(0.0, 0.0, 0.0)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldRefractedColor(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+	a := w.Objects[0]
+	a.GetMaterial().Ambient = 1.0
+
+	b := w.Objects[1]
+	b.GetMaterial().Transparency = 1.0
+	b.GetMaterial().RefractiveIndex = 1.5
+
+	r := ray.New(tuple.Point(0, 0, 0.1), tuple.Vector(0, 1, 0))
+	i1 := intersection.NewIntersection(-0.9899, a)
+	i2 := intersection.NewIntersection(-0.4899, b)
+	i3 := intersection.NewIntersection(0.4899, b)
+	i4 := intersection.NewIntersection(0.9899, a)
+	xs := intersection.Intersections{i1, i2, i3, i4}
+
+	comps := xs[2].PrepareComputations(r, xs)
+	c := w.RefractedColor(comps, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(0.0, 0.99888, 0.04725)) {
 		t.Errorf("wrong color %+v", c)
 	}
 }

@@ -83,11 +83,21 @@ func renderImage() {
 	world.AddObject(right)
 
 	left := intersection.NewSphere()
-	left.Transform = matrix.Translation(-1.5, 0.33, -0.75).Mul(matrix.Scaling(0.33, 0.33, 0.33))
+	left.Transform = matrix.Translation(-1.5, 0.33, -0.9).Mul(matrix.Scaling(0.33, 0.33, 0.33))
 	left.Material.Color = color.New(1, 0.8, 0.1)
 	left.Material.Diffuse = 0.7
 	left.Material.Specular = 0.1
 	world.AddObject(left)
+
+	glassBall := intersection.NewSphere()
+	glassBall.Transform = matrix.Translation(0.7, 1.2, -2.0).Mul(matrix.Scaling(0.4, 0.4, 0.4))
+	glassBall.Material.Color = color.New(0, 0, 0)
+	glassBall.Material.Diffuse = 0.1
+	glassBall.Material.Specular = 1.0
+	glassBall.Material.Shininess = 100.0
+	glassBall.Material.Transparency = 1.0
+	glassBall.Material.RefractiveIndex = 2.42
+	world.AddObject(glassBall)
 
 	lightSource := light.NewPoint(tuple.Point(-10, 10, -10), color.New(1, 1, 1))
 	world.AddLight(lightSource)

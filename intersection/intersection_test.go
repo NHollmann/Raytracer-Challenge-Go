@@ -92,7 +92,7 @@ func TestPrecomputeIntersection(t *testing.T) {
 	shape := intersection.NewSphere()
 	i := intersection.NewIntersection(4, shape)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	if !flt.Equal(comps.T, i.T) {
 		t.Errorf("wrong t")
 	}
@@ -115,7 +115,7 @@ func TestPrecomputeIntersectionOutside(t *testing.T) {
 	shape := intersection.NewSphere()
 	i := intersection.NewIntersection(4, shape)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	if comps.Inside {
 		t.Errorf("should be outside")
 	}
@@ -126,7 +126,7 @@ func TestPrecomputeIntersectionInside(t *testing.T) {
 	shape := intersection.NewSphere()
 	i := intersection.NewIntersection(1, shape)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	if !flt.Equal(comps.T, i.T) {
 		t.Errorf("wrong t")
 	}
@@ -152,20 +152,31 @@ func TestPrecomputeReflectV(t *testing.T) {
 	shape := intersection.NewPlane()
 	i := intersection.NewIntersection(math.Sqrt(2), shape)
 
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	if !tuple.Vector(0, math.Sqrt(2)/2.0, math.Sqrt(2)/2.0).Equal(comps.ReflectV) {
 		t.Errorf("wrong reflectV")
 	}
 }
 
-func TestHitOffsetPoint(t *testing.T) {
+func TestHitOverPoint(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := intersection.NewSphere()
 	shape.Transform = matrix.Translation(0, 0, 1)
 	i := intersection.NewIntersection(5, shape)
-	comps := i.PrepareComputations(r)
+	comps := i.PrepareComputations(r, nil)
 	if comps.OverPoint.Z() >= flt.Epsilon/2.0 || comps.Point.Z() <= comps.OverPoint.Z() {
 		t.Errorf("over point wrong")
+	}
+}
+
+func TestHitUnderPoint(t *testing.T) {
+	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
+	shape := NewGlassSphere()
+	shape.Transform = matrix.Translation(0, 0, 1)
+	i := intersection.NewIntersection(5, shape)
+	comps := i.PrepareComputations(r, nil)
+	if comps.UnderPoint.Z() <= flt.Epsilon/2.0 || comps.Point.Z() >= comps.UnderPoint.Z() {
+		t.Errorf("under point wrong")
 	}
 }
 
@@ -207,7 +218,7 @@ func TestFindN1AndN2(t *testing.T) {
 
 	for _, c := range cs {
 
-		comps := xs[c.index].PrepareComputations(r)
+		comps := xs[c.index].PrepareComputations(r, xs)
 		if !flt.Equal(comps.N1, c.n1) || !flt.Equal(comps.N2, c.n2) {
 			t.Errorf("wrong n1 or n2 at index %d", c.index)
 		}

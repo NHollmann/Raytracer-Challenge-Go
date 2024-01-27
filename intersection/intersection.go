@@ -1,6 +1,7 @@
 package intersection
 
 import (
+	"slices"
 	"sort"
 
 	"github.com/NHollmann/Raytracer-Challenge-Go/flt"
@@ -16,16 +17,17 @@ type Intersection struct {
 type Intersections []Intersection
 
 type PreparedComps struct {
-	T         float64
-	Object    Shape
-	Point     tuple.Tuple
-	OverPoint tuple.Tuple
-	EyeV      tuple.Tuple
-	NormalV   tuple.Tuple
-	ReflectV  tuple.Tuple
-	Inside    bool
-	N1        float64 // Refractive index of exiting material
-	N2        float64 // Refractive index of entering material
+	T          float64
+	Object     Shape
+	Point      tuple.Tuple
+	OverPoint  tuple.Tuple
+	UnderPoint tuple.Tuple
+	EyeV       tuple.Tuple
+	NormalV    tuple.Tuple
+	ReflectV   tuple.Tuple
+	Inside     bool
+	N1         float64 // Refractive index of exiting material
+	N2         float64 // Refractive index of entering material
 }
 
 func NewIntersection(T float64, Object Shape) Intersection {
@@ -54,7 +56,11 @@ func (xs Intersections) Hit() *Intersection {
 	return nil
 }
 
-func (x Intersection) PrepareComputations(r ray.Ray) PreparedComps {
+func (x Intersection) PrepareComputations(r ray.Ray, xs Intersections) PreparedComps {
+	if xs == nil {
+		xs = Intersections{x}
+	}
+
 	point := r.Position(x.T)
 	result := PreparedComps{
 		T:      x.T,
@@ -72,7 +78,44 @@ func (x Intersection) PrepareComputations(r ray.Ray) PreparedComps {
 	}
 
 	result.OverPoint = result.Point.Add(result.NormalV.Mul(flt.Epsilon))
+	result.UnderPoint = result.Point.Sub(result.NormalV.Mul(flt.Epsilon))
 	result.ReflectV = r.Direction.Reflect(result.NormalV)
 
+	// Find refractive indizies of entering and exiting material
+	containers := make([]Shape, 0, len(xs))
+	for _, i := range xs {
+		if i == x {
+			obj, found := last(containers)
+			if found {
+				result.N1 = obj.GetMaterial().RefractiveIndex
+			} else {
+				result.N1 = 1.0
+			}
+		}
+		idx := slices.Index(containers, i.Object)
+		if idx >= 0 {
+			containers = slices.Delete(containers, idx, idx+1)
+		} else {
+			containers = append(containers, i.Object)
+		}
+		if i == x {
+			obj, found := last(containers)
+			if found {
+				result.N2 = obj.GetMaterial().RefractiveIndex
+			} else {
+				result.N2 = 1.0
+			}
+			break
+		}
+	}
+
 	return result
+}
+
+func last[E any](s []E) (E, bool) {
+	if len(s) == 0 {
+		var zero E
+		return zero, false
+	}
+	return s[len(s)-1], true
 }
