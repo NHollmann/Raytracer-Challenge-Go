@@ -1,6 +1,7 @@
 package intersection
 
 import (
+	"math"
 	"slices"
 	"sort"
 
@@ -110,6 +111,21 @@ func (x Intersection) PrepareComputations(r ray.Ray, xs Intersections) PreparedC
 	}
 
 	return result
+}
+
+func (comps *PreparedComps) Schlick() float64 {
+	cos := comps.EyeV.Dot(comps.NormalV)
+	if comps.N1 > comps.N2 {
+		n := comps.N1 / comps.N2
+		sin2T := n * n * (1.0 - (cos * cos))
+		if sin2T > 1.0 {
+			return 1.0
+		}
+
+		cos = math.Sqrt(1.0 - sin2T)
+	}
+	r0 := math.Pow((comps.N1-comps.N2)/(comps.N1+comps.N2), 2.0)
+	return r0 + (1-r0)*math.Pow(1-cos, 5.0)
 }
 
 func last[E any](s []E) (E, bool) {

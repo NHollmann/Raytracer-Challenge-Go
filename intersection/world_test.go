@@ -397,7 +397,62 @@ func TestWorldRefractedColor(t *testing.T) {
 	comps := xs[2].PrepareComputations(r, xs)
 	c := w.RefractedColor(comps, DEFAULT_RECURSION_MAX)
 
-	if !c.Equal(color.New(0.0, 0.99888, 0.04725)) {
+	if !c.Equal(color.New(0.8, 1.0, 0.6)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldRefractedShadeHit(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+
+	floor := intersection.NewPlane()
+	floor.Transform = matrix.Translation(0, -1, 0)
+	floor.GetMaterial().Transparency = 0.5
+	floor.GetMaterial().RefractiveIndex = 1.5
+	w.AddObject(floor)
+
+	ball := intersection.NewSphere()
+	ball.GetMaterial().Color = color.New(1, 0, 0)
+	ball.GetMaterial().Ambient = 0.5
+	ball.Transform = matrix.Translation(0, -3.5, -0.5)
+	w.AddObject(ball)
+
+	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
+	i := intersection.NewIntersection(math.Sqrt(2), floor)
+	xs := intersection.Intersections{i}
+
+	comps := xs[0].PrepareComputations(r, xs)
+	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(0.93642, 0.68642, 0.68642)) {
+		t.Errorf("wrong color %+v", c)
+	}
+}
+
+func TestWorldRefractedReflectedShadeHit(t *testing.T) {
+	w := intersection.NewDefaultWorld()
+
+	floor := intersection.NewPlane()
+	floor.Transform = matrix.Translation(0, -1, 0)
+	floor.GetMaterial().Reflective = 0.5
+	floor.GetMaterial().Transparency = 0.5
+	floor.GetMaterial().RefractiveIndex = 1.5
+	w.AddObject(floor)
+
+	ball := intersection.NewSphere()
+	ball.GetMaterial().Color = color.New(1, 0, 0)
+	ball.GetMaterial().Ambient = 0.5
+	ball.Transform = matrix.Translation(0, -3.5, -0.5)
+	w.AddObject(ball)
+
+	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
+	i := intersection.NewIntersection(math.Sqrt(2), floor)
+	xs := intersection.Intersections{i}
+
+	comps := xs[0].PrepareComputations(r, xs)
+	c := w.ShadeHit(comps, DEFAULT_RECURSION_MAX)
+
+	if !c.Equal(color.New(0.93391, 0.69643, 0.69243)) {
 		t.Errorf("wrong color %+v", c)
 	}
 }

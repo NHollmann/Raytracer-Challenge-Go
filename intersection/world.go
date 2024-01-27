@@ -80,7 +80,17 @@ func (w *World) ShadeHit(comps PreparedComps, remaining int) color.Color {
 	reflected := w.ReflectedColor(comps, remaining)
 	refracted := w.RefractedColor(comps, remaining)
 
-	return result.Add(reflected).Add(refracted)
+	material := comps.Object.GetMaterial()
+	if material.Reflective > 0 && material.Transparency > 0 {
+		reflectance := comps.Schlick()
+		return result.
+			Add(reflected.MulScalar(reflectance)).
+			Add(refracted.MulScalar(1.0 - reflectance))
+	} else {
+		return result.
+			Add(reflected).
+			Add(refracted)
+	}
 }
 
 func (w *World) ColorAt(r ray.Ray, remaining int) color.Color {

@@ -224,3 +224,47 @@ func TestFindN1AndN2(t *testing.T) {
 		}
 	}
 }
+
+func TestSchlickTotalInternalReflection(t *testing.T) {
+	shape := NewGlassSphere()
+	r := ray.New(tuple.Point(0, 0, math.Sqrt(2.0)/2.0), tuple.Vector(0, 1, 0))
+
+	i1 := intersection.NewIntersection(-math.Sqrt(2.0)/2.0, shape)
+	i2 := intersection.NewIntersection(math.Sqrt(2.0)/2.0, shape)
+	xs := intersection.Intersections{i1, i2}
+
+	comps := xs[1].PrepareComputations(r, xs)
+	reflectance := comps.Schlick()
+	if !flt.Equal(reflectance, 1.0) {
+		t.Errorf("reflectance %.2f wrong", reflectance)
+	}
+}
+
+func TestSchlickPerpendicular(t *testing.T) {
+	shape := NewGlassSphere()
+	r := ray.New(tuple.Point(0, 0, 0), tuple.Vector(0, 1, 0))
+
+	i1 := intersection.NewIntersection(-1, shape)
+	i2 := intersection.NewIntersection(1, shape)
+	xs := intersection.Intersections{i1, i2}
+
+	comps := xs[1].PrepareComputations(r, xs)
+	reflectance := comps.Schlick()
+	if !flt.Equal(reflectance, 0.04) {
+		t.Errorf("reflectance %.2f wrong", reflectance)
+	}
+}
+
+func TestSchlickSmallAngle(t *testing.T) {
+	shape := NewGlassSphere()
+	r := ray.New(tuple.Point(0, 0.99, -2), tuple.Vector(0, 0, 1))
+
+	i1 := intersection.NewIntersection(1.8589, shape)
+	xs := intersection.Intersections{i1}
+
+	comps := xs[0].PrepareComputations(r, xs)
+	reflectance := comps.Schlick()
+	if !flt.Equal(reflectance, 0.48873) {
+		t.Errorf("reflectance %.2f wrong", reflectance)
+	}
+}

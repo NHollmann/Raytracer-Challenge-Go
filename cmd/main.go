@@ -94,7 +94,8 @@ func renderImage() {
 	glassBall.Material.Color = color.New(0, 0, 0)
 	glassBall.Material.Diffuse = 0.1
 	glassBall.Material.Specular = 1.0
-	glassBall.Material.Shininess = 100.0
+	glassBall.Material.Shininess = 300.0
+	glassBall.Material.Reflective = 0.9
 	glassBall.Material.Transparency = 1.0
 	glassBall.Material.RefractiveIndex = 2.42
 	world.AddObject(glassBall)
