@@ -223,7 +223,7 @@ func TestShadeHitShadow(t *testing.T) {
 	w.AddObject(s1)
 
 	s2 := intersection.NewSphere()
-	s2.Transform = matrix.Translation(0, 0, 10)
+	s2.SetTransform(matrix.Translation(0, 0, 10))
 	w.AddObject(s2)
 
 	r := ray.New(tuple.Point(0, 0, 5), tuple.Vector(0, 0, 1))
@@ -254,7 +254,7 @@ func TestWorldReflectedColor(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	shape := intersection.NewPlane()
 	shape.GetMaterial().Reflective = 0.5
-	shape.Transform = matrix.Translation(0, -1, 0)
+	shape.SetTransform(matrix.Translation(0, -1, 0))
 	w.AddObject(shape)
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
 	i := intersection.NewIntersection(math.Sqrt(2), shape)
@@ -271,7 +271,7 @@ func TestWorldReflectedShadeHit(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	shape := intersection.NewPlane()
 	shape.GetMaterial().Reflective = 0.5
-	shape.Transform = matrix.Translation(0, -1, 0)
+	shape.SetTransform(matrix.Translation(0, -1, 0))
 	w.AddObject(shape)
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
 	i := intersection.NewIntersection(math.Sqrt(2), shape)
@@ -291,12 +291,12 @@ func TestWorldReflectedEndlessRecursion(t *testing.T) {
 
 	lower := intersection.NewPlane()
 	lower.GetMaterial().Reflective = 1.0
-	lower.Transform = matrix.Translation(0, -1, 0)
+	lower.SetTransform(matrix.Translation(0, -1, 0))
 	w.AddObject(lower)
 
 	upper := intersection.NewPlane()
 	upper.GetMaterial().Reflective = 1.0
-	upper.Transform = matrix.Translation(0, 1, 0)
+	upper.SetTransform(matrix.Translation(0, 1, 0))
 	w.AddObject(upper)
 
 	r := ray.New(tuple.Point(0, 0, 0), tuple.Vector(0, 1, 0))
@@ -311,7 +311,7 @@ func TestWorldReflectedMaxDepth(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 	shape := intersection.NewPlane()
 	shape.GetMaterial().Reflective = 0.5
-	shape.Transform = matrix.Translation(0, -1, 0)
+	shape.SetTransform(matrix.Translation(0, -1, 0))
 	w.AddObject(shape)
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
 	i := intersection.NewIntersection(math.Sqrt(2), shape)
@@ -406,7 +406,7 @@ func TestWorldRefractedShadeHit(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 
 	floor := intersection.NewPlane()
-	floor.Transform = matrix.Translation(0, -1, 0)
+	floor.SetTransform(matrix.Translation(0, -1, 0))
 	floor.GetMaterial().Transparency = 0.5
 	floor.GetMaterial().RefractiveIndex = 1.5
 	w.AddObject(floor)
@@ -414,7 +414,7 @@ func TestWorldRefractedShadeHit(t *testing.T) {
 	ball := intersection.NewSphere()
 	ball.GetMaterial().Color = color.New(1, 0, 0)
 	ball.GetMaterial().Ambient = 0.5
-	ball.Transform = matrix.Translation(0, -3.5, -0.5)
+	ball.SetTransform(matrix.Translation(0, -3.5, -0.5))
 	w.AddObject(ball)
 
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))
@@ -433,7 +433,7 @@ func TestWorldRefractedReflectedShadeHit(t *testing.T) {
 	w := intersection.NewDefaultWorld()
 
 	floor := intersection.NewPlane()
-	floor.Transform = matrix.Translation(0, -1, 0)
+	floor.SetTransform(matrix.Translation(0, -1, 0))
 	floor.GetMaterial().Reflective = 0.5
 	floor.GetMaterial().Transparency = 0.5
 	floor.GetMaterial().RefractiveIndex = 1.5
@@ -442,7 +442,7 @@ func TestWorldRefractedReflectedShadeHit(t *testing.T) {
 	ball := intersection.NewSphere()
 	ball.GetMaterial().Color = color.New(1, 0, 0)
 	ball.GetMaterial().Ambient = 0.5
-	ball.Transform = matrix.Translation(0, -3.5, -0.5)
+	ball.SetTransform(matrix.Translation(0, -3.5, -0.5))
 	w.AddObject(ball)
 
 	r := ray.New(tuple.Point(0, 0, -3), tuple.Vector(0, -math.Sqrt(2)/2.0, math.Sqrt(2)/2.0))

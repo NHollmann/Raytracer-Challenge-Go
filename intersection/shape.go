@@ -16,18 +16,21 @@ type Shape interface {
 
 	GetMaterial() *material.Material
 	GetTransform() *matrix.Mat44
+	GetInvTransform() *matrix.Mat44
 }
 
 type BaseShape struct {
 	Shape
-	Transform matrix.Mat44
-	Material  material.Material
+	transform    matrix.Mat44
+	invTransform matrix.Mat44
+	Material     material.Material
 }
 
 func NewShape() *BaseShape {
 	return &BaseShape{
-		Transform: matrix.Identity44(),
-		Material:  material.New(),
+		transform:    matrix.Identity44(),
+		invTransform: matrix.Identity44(),
+		Material:     material.New(),
 	}
 }
 
@@ -35,19 +38,28 @@ func (s *BaseShape) GetMaterial() *material.Material {
 	return &s.Material
 }
 
+func (s *BaseShape) SetTransform(transform matrix.Mat44) {
+	s.transform = transform
+	s.invTransform = transform.Inverse()
+}
+
 func (s *BaseShape) GetTransform() *matrix.Mat44 {
-	return &s.Transform
+	return &s.transform
+}
+
+func (s *BaseShape) GetInvTransform() *matrix.Mat44 {
+	return &s.invTransform
 }
 
 func (s *BaseShape) Intersect(r ray.Ray) Intersections {
-	r = r.Transform(s.Transform.Inverse())
+	r = r.Transform(s.invTransform)
 	return s.localIntersect(r)
 }
 
 func (s *BaseShape) NormalAt(p tuple.Tuple) tuple.Tuple {
-	objectPoint := s.Transform.Inverse().MulTuple(p)
+	objectPoint := s.invTransform.MulTuple(p)
 	objectNormal := s.localNormalAt(objectPoint)
-	worldNormal := s.Transform.Inverse().Transpose().MulTuple(objectNormal)
+	worldNormal := s.invTransform.Transpose().MulTuple(objectNormal)
 	worldNormal[3] = 0
 	return worldNormal.Normalize()
 }

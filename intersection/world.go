@@ -30,7 +30,7 @@ func NewDefaultWorld() World {
 	s1.Material.Specular = 0.2
 
 	s2 := NewSphere()
-	s2.Transform = matrix.Scaling(0.5, 0.5, 0.5)
+	s2.SetTransform(matrix.Scaling(0.5, 0.5, 0.5))
 
 	return World{
 		Objects: []Shape{s1, s2},
@@ -67,7 +67,7 @@ func (w *World) ShadeHit(comps PreparedComps, remaining int) color.Color {
 		shadowed := w.IsShadowed(comps.OverPoint, light)
 		surface := comps.Object.GetMaterial().Lighting(
 			light,
-			comps.Object.GetTransform().Inverse(),
+			*comps.Object.GetInvTransform(),
 			comps.OverPoint,
 			comps.EyeV,
 			comps.NormalV,

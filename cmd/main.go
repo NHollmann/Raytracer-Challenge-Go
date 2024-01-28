@@ -65,7 +65,7 @@ func renderImage() {
 	*/
 
 	middle := intersection.NewSphere()
-	middle.Transform = matrix.Translation(-0.5, 1, 0.5)
+	middle.SetTransform(matrix.Translation(-0.5, 1, 0.5))
 	middle.Material.Pattern = pattern.NewGradientPatternColor(color.New(0.2, 0.8, 0.0), color.New(1, 0.1, 0))
 	middle.Material.Pattern.SetTransform(matrix.RotationY(math.Pi / 8.0).Mul(matrix.Scaling(2, 2, 2).Mul(matrix.Translation(0.5, 0, 0))))
 	middle.Material.Color = color.New(0.1, 1, 0.5)
@@ -75,7 +75,7 @@ func renderImage() {
 	world.AddObject(middle)
 
 	right := intersection.NewSphere()
-	right.Transform = matrix.Translation(1.5, 0.5, -0.5).Mul(matrix.Scaling(0.5, 0.5, 0.5))
+	right.SetTransform(matrix.Translation(1.5, 0.5, -0.5).Mul(matrix.Scaling(0.5, 0.5, 0.5)))
 	right.Material.Color = color.New(0.5, 1, 0.1)
 	right.Material.Diffuse = 0.7
 	right.Material.Specular = 0.3
@@ -83,14 +83,14 @@ func renderImage() {
 	world.AddObject(right)
 
 	left := intersection.NewSphere()
-	left.Transform = matrix.Translation(-1.5, 0.33, -0.9).Mul(matrix.Scaling(0.33, 0.33, 0.33))
+	left.SetTransform(matrix.Translation(-1.5, 0.33, -0.9).Mul(matrix.Scaling(0.33, 0.33, 0.33)))
 	left.Material.Color = color.New(1, 0.8, 0.1)
 	left.Material.Diffuse = 0.7
 	left.Material.Specular = 0.1
 	world.AddObject(left)
 
 	glassBall := intersection.NewSphere()
-	glassBall.Transform = matrix.Translation(0.7, 1.2, -2.0).Mul(matrix.Scaling(0.4, 0.4, 0.4))
+	glassBall.SetTransform(matrix.Translation(0.7, 1.2, -2.0).Mul(matrix.Scaling(0.4, 0.4, 0.4)))
 	glassBall.Material.Color = color.New(0, 0, 0)
 	glassBall.Material.Diffuse = 0.1
 	glassBall.Material.Specular = 1.0
@@ -104,11 +104,11 @@ func renderImage() {
 	world.AddLight(lightSource)
 
 	cam := camera.New(400, 200, math.Pi/3.0)
-	cam.Transform = matrix.ViewTransform(
+	cam.SetTransform(matrix.ViewTransform(
 		tuple.Point(0, 1.5, -5),
 		tuple.Point(0, 1, 0),
 		tuple.Vector(0, 1, 0),
-	)
+	))
 
 	renderCanvas := cam.Render(world)
 	renderCanvas.SavePpmToFile("rendering.ppm")

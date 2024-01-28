@@ -22,7 +22,7 @@ func NewGlassSphere() *intersection.Sphere {
 func TestSphereDefaultTransform(t *testing.T) {
 	s := intersection.NewSphere()
 
-	if !matrix.Identity44().Equal(s.Transform) {
+	if !matrix.Identity44().Equal(*s.GetTransform()) {
 		t.Errorf("sphere has wrong default transform")
 	}
 }
@@ -124,7 +124,7 @@ func TestSphereIntersectionFromBehind(t *testing.T) {
 func TestSphereIntersectionScaled(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	s := intersection.NewSphere()
-	s.Transform = matrix.Scaling(2, 2, 2)
+	s.SetTransform(matrix.Scaling(2, 2, 2))
 
 	xs := s.Intersect(r)
 
@@ -142,7 +142,7 @@ func TestSphereIntersectionScaled(t *testing.T) {
 func TestSphereIntersectionTranslated(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	s := intersection.NewSphere()
-	s.Transform = matrix.Translation(5, 0, 0)
+	s.SetTransform(matrix.Translation(5, 0, 0))
 
 	xs := s.Intersect(r)
 
@@ -200,7 +200,7 @@ func TestSphereNormalAtIsNormalized(t *testing.T) {
 
 func TestSphereNormalAtTranslated(t *testing.T) {
 	s := intersection.NewSphere()
-	s.Transform = matrix.Translation(0, 1, 0)
+	s.SetTransform(matrix.Translation(0, 1, 0))
 	n := s.NormalAt(tuple.Point(0, 1.70711, -0.70711))
 
 	if !tuple.Vector(0, 0.70711, -0.70711).Equal(n) {
@@ -210,7 +210,7 @@ func TestSphereNormalAtTranslated(t *testing.T) {
 
 func TestSphereNormalAtTransformed(t *testing.T) {
 	s := intersection.NewSphere()
-	s.Transform = matrix.Scaling(1, 0.5, 1).Mul(matrix.RotationZ(math.Pi / 5.0))
+	s.SetTransform(matrix.Scaling(1, 0.5, 1).Mul(matrix.RotationZ(math.Pi / 5.0)))
 	n := s.NormalAt(tuple.Point(0, math.Sqrt(2)/2.0, -math.Sqrt(2)/2.0))
 
 	if !tuple.Vector(0, 0.97014, -0.24254).Equal(n) {

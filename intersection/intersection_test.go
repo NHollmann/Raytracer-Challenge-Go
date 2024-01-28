@@ -161,7 +161,7 @@ func TestPrecomputeReflectV(t *testing.T) {
 func TestHitOverPoint(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := intersection.NewSphere()
-	shape.Transform = matrix.Translation(0, 0, 1)
+	shape.SetTransform(matrix.Translation(0, 0, 1))
 	i := intersection.NewIntersection(5, shape)
 	comps := i.PrepareComputations(r, nil)
 	if comps.OverPoint.Z() >= flt.Epsilon/2.0 || comps.Point.Z() <= comps.OverPoint.Z() {
@@ -172,7 +172,7 @@ func TestHitOverPoint(t *testing.T) {
 func TestHitUnderPoint(t *testing.T) {
 	r := ray.New(tuple.Point(0, 0, -5), tuple.Vector(0, 0, 1))
 	shape := NewGlassSphere()
-	shape.Transform = matrix.Translation(0, 0, 1)
+	shape.SetTransform(matrix.Translation(0, 0, 1))
 	i := intersection.NewIntersection(5, shape)
 	comps := i.PrepareComputations(r, nil)
 	if comps.UnderPoint.Z() <= flt.Epsilon/2.0 || comps.Point.Z() >= comps.UnderPoint.Z() {
@@ -195,15 +195,15 @@ func TestFindN1AndN2(t *testing.T) {
 	}
 
 	a := NewGlassSphere()
-	a.Transform = matrix.Scaling(2, 2, 2)
+	a.SetTransform(matrix.Scaling(2, 2, 2))
 	a.Material.RefractiveIndex = 1.5
 
 	b := NewGlassSphere()
-	b.Transform = matrix.Translation(0, 0, -0.25)
+	b.SetTransform(matrix.Translation(0, 0, -0.25))
 	b.Material.RefractiveIndex = 2.0
 
 	c := NewGlassSphere()
-	c.Transform = matrix.Translation(0, 0, 0.25)
+	c.SetTransform(matrix.Translation(0, 0, 0.25))
 	c.Material.RefractiveIndex = 2.5
 
 	r := ray.New(tuple.Point(0, 0, -4), tuple.Vector(0, 0, 1))

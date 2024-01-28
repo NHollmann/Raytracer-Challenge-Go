@@ -13,13 +13,14 @@ import (
 const MAX_RECUSRION_DEPTH = 5
 
 type Camera struct {
-	Hsize       uint32
-	Vsize       uint32
-	FieldOfView float64
-	Transform   matrix.Mat44
-	PixelSize   float64
-	HalfWidth   float64
-	HalfHeight  float64
+	Hsize        uint32
+	Vsize        uint32
+	FieldOfView  float64
+	transform    matrix.Mat44
+	invTransform matrix.Mat44
+	PixelSize    float64
+	HalfWidth    float64
+	HalfHeight   float64
 }
 
 func New(hsize, vsize uint32, fieldOfView float64) Camera {
@@ -37,14 +38,20 @@ func New(hsize, vsize uint32, fieldOfView float64) Camera {
 	}
 
 	return Camera{
-		Hsize:       hsize,
-		Vsize:       vsize,
-		FieldOfView: fieldOfView,
-		Transform:   matrix.Identity44(),
-		HalfWidth:   halfWidth,
-		HalfHeight:  HalfHeight,
-		PixelSize:   (halfWidth * 2) / float64(hsize),
+		Hsize:        hsize,
+		Vsize:        vsize,
+		FieldOfView:  fieldOfView,
+		transform:    matrix.Identity44(),
+		invTransform: matrix.Identity44(),
+		HalfWidth:    halfWidth,
+		HalfHeight:   HalfHeight,
+		PixelSize:    (halfWidth * 2) / float64(hsize),
 	}
+}
+
+func (c *Camera) SetTransform(transform matrix.Mat44) {
+	c.transform = transform
+	c.invTransform = transform.Inverse()
 }
 
 func (c *Camera) RayForPixel(px, py float64) ray.Ray {
@@ -54,8 +61,8 @@ func (c *Camera) RayForPixel(px, py float64) ray.Ray {
 	worldX := c.HalfWidth - xoffset
 	worldY := c.HalfHeight - yoffset
 
-	pixel := c.Transform.Inverse().MulTuple(tuple.Point(worldX, worldY, -1))
-	origin := c.Transform.Inverse().MulTuple(tuple.Point(0, 0, 0))
+	pixel := c.invTransform.MulTuple(tuple.Point(worldX, worldY, -1))
+	origin := c.invTransform.MulTuple(tuple.Point(0, 0, 0))
 	direction := pixel.Sub(origin).Normalize()
 
 	return ray.New(origin, direction)
